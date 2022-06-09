@@ -1,5 +1,6 @@
 package zeus.plugin;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentName;
@@ -477,7 +478,7 @@ public class PluginManager {
 //        //清理Fragment的class缓存
 //        FragmentClient.clearCache();
         try {
-            Field field = LayoutInflater.class.getDeclaredField("sConstructorMap");
+            @SuppressLint("SoonBlockedPrivateApi") Field field = LayoutInflater.class.getDeclaredField("sConstructorMap");
             field.setAccessible(true);
             Map map = (Map) field.get(null);
             map.clear();
@@ -825,6 +826,24 @@ public class PluginManager {
         intent.setClassName(componentName.getPackageName(), PluginConstant.PLUGIN_ACTIVITY_FOR_STANDARD);
         intent.putExtra(PluginConstant.PLUGIN_REAL_ACTIVITY, componentName.getClassName());
         activity.startActivity(intent);
+
+    }
+
+    public static void startService(Intent intent) {
+
+        ComponentName componentName = intent.getComponent();
+        intent.setClassName(componentName.getPackageName(), PluginConstant.PLUGIN_SERVICE_FOR_STANDARD);
+        intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, componentName.getClassName());
+        mBaseContext.startService(intent);
+
+    }
+
+    public static void bindService(Activity activity,Intent intent) {
+
+        ComponentName componentName = intent.getComponent();
+        intent.setClassName(componentName.getPackageName(), PluginConstant.PLUGIN_SERVICE_FOR_STANDARD);
+        intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, componentName.getClassName());
+        mBaseContext.startService(intent);
 
     }
 

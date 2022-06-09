@@ -17,10 +17,12 @@ public class PluginConstant {
      * 真实的activity
      */
     public static final String PLUGIN_REAL_ACTIVITY = "realActivity";
+    public static final String PLUGIN_REAL_SERVICE = "realService";
     /**
      * 校验的标准的activity，仅为了通过android的activity校验，需要在AndroidManifest.xml中添加
      */
     public static final String PLUGIN_ACTIVITY_FOR_STANDARD = "com.zeus.ZeusActivityForStandard";
+    public static final String PLUGIN_SERVICE_FOR_STANDARD = "com.weiwei.easyplugin.plugin.StubService";
 
     /**
      * 如果插件路径是在SD卡上，则插件后缀应为jar

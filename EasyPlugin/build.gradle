@@ -46,11 +46,11 @@ afterEvaluate {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
                 from components.release
-                //建议和github地址对应，否则对jitpack无效
+                //建议和github地址对应，否则对jitpack无效，发布本地maven或者私仓有效
                 groupId = 'com.github.weiwei0928'
-                //建议和github仓库名称对应，否则对jitpack无效
-                artifactId = 'EasyPlugin1'
-                //建议和release的tag相同，否则对jitpack无效
+                //建议和github仓库名称对应，否则对jitpack无效，发布本地maven或者私仓有效
+                artifactId = 'EasyPlugin'
+                //建议和release的tag相同，否则对jitpack无效，发布本地maven或者私仓有效
                 version = '1.0.0'
             }
         }

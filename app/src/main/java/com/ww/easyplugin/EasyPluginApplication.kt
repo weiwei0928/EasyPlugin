@@ -1,4 +1,4 @@
-package com.weiwei.easyplugin
+package com.ww.easyplugin
 
 import android.app.Application
 import android.content.Context

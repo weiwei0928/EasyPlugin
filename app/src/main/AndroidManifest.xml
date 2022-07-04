@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.weiwei.easyplugin">
+    package="com.ww.easyplugin">
 
     <application
-        android:name="com.weiwei.easyplugin.EasyPluginApplication"
+        android:name=".EasyPluginApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,7 +15,7 @@
         android:theme="@style/Theme.EasyPlugin"
         tools:targetApi="31">
         <activity
-            android:name="com.weiwei.easyplugin.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,16 +24,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.weiwei.easyplugin.plugin.TestPluginActivity"></activity>
+        <activity android:name=".plugin.TestPluginActivity"></activity>
         <!--        <activity android:name=".hotfix.TestHotfixActivity1"></activity>-->
-        <activity android:name="com.weiwei.easyplugin.androidhotfix.TestHotFixActivity"></activity>
-        <activity android:name="com.weiwei.easyplugin.androidhotfix.TestHotfixActivity1"></activity>
+        <activity android:name=".androidhotfix.TestHotFixActivity"></activity>
+        <activity android:name=".androidhotfix.TestHotfixActivity1"></activity>
         <!--这是通过预埋activity的方式来加载插件，也可以通过以下面那个骗过android系统-->
         <activity android:name="zeus.testplugin.MainActivity"/>
         <!--校验用的activity,为了骗过android的activity存在校验-->
         <activity android:name="com.zeus.ZeusActivityForStandard"/>
 
-        <service android:name="com.weiwei.easyplugin.plugin.StubService"/>
+        <service android:name=".plugin.StubService"/>
     </application>
 
 </manifest>

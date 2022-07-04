@@ -1,11 +1,10 @@
-package com.weiwei.easyplugin.plugin
+package com.ww.easyplugin.plugin
 
 import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.text.TextUtils
 import android.util.Log
-import com.weiwei.easyplugin.EasyPluginApplication
 import zeus.plugin.PluginConstant
 import zeus.plugin.PluginManager
 

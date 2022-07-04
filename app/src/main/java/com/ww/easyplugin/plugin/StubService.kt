@@ -1,4 +1,4 @@
-package com.weiwei.easyplugin.plugin
+package com.ww.easyplugin.plugin
 
 import android.app.Service
 import android.content.Intent

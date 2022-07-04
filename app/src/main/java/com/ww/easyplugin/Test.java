@@ -1,9 +1,8 @@
-package com.weiwei.easyplugin;
+package com.ww.easyplugin;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.PropertyPermission;
 
 /**
  * @author weiwei

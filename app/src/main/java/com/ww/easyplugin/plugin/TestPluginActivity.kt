@@ -1,12 +1,12 @@
-package com.weiwei.easyplugin.plugin
+package com.ww.easyplugin.plugin
 
 import android.content.Intent
 import android.content.res.AssetManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.weiwei.easyplugin.EasyPluginApplication
-import com.weiwei.easyplugin.R
+import com.ww.easyplugin.EasyPluginApplication
+import com.ww.easyplugin.R
 import kotlinx.android.synthetic.main.activity_plugin.*
 import zeus.plugin.PluginManager
 import zeus.plugin.PluginUtil

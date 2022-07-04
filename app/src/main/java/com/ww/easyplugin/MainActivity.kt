@@ -1,15 +1,14 @@
-package com.weiwei.easyplugin
+package com.ww.easyplugin
 
 import android.content.Intent
 import android.content.res.AssetManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Process
 import android.view.View
 import android.widget.Toast
-import com.weiwei.easyplugin.R
-import com.weiwei.easyplugin.androidhotfix.TestHotfixActivity1
-import com.weiwei.easyplugin.plugin.TestPluginActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.ww.easyplugin.androidhotfix.TestHotfixActivity1
+import com.ww.easyplugin.plugin.TestPluginActivity
 import zeus.plugin.PluginManager
 import zeus.plugin.PluginUtil
 import zeus.plugin.ZeusPlugin

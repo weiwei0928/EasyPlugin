@@ -1,4 +1,4 @@
-package com.weiwei.easyplugin.androidhotfix;
+package com.ww.easyplugin.androidhotfix;
 
 import android.os.Bundle;
 import android.view.Gravity;
@@ -6,9 +6,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.weiwei.easyplugin.MainActivity;
-import com.weiwei.easyplugin.R;
-import com.weiwei.easyplugin.androidhotfix.hotfixTest.MyInterface;
+import com.ww.easyplugin.MainActivity;
+import com.ww.easyplugin.R;
+import com.ww.easyplugin.androidhotfix.hotfixTest.MyInterface;
 
 import zeus.plugin.ZeusBaseActivity;
 

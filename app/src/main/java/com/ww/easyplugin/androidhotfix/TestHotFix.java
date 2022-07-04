@@ -1,4 +1,4 @@
-package com.weiwei.easyplugin.androidhotfix;
+package com.ww.easyplugin.androidhotfix;
 
 /**
  * Created by huangjian on 2016/8/22.

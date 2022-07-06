@@ -1,4 +1,4 @@
-package com.ww.easyplugin.plugin
+package com.ww
 
 import android.annotation.SuppressLint
 import android.app.Service

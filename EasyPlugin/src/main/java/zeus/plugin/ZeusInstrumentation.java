@@ -2,37 +2,82 @@ package zeus.plugin;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.TextUtils;
 
-/**
- * Created by huangjian on 2016/7/28.
- */
-public class ZeusInstrumentation extends Instrumentation{
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
+
+public class ZeusInstrumentation extends Instrumentation {
+
+    private Instrumentation mInstrumentation;
+    private PackageManager mPackageManager;
+
+    public ZeusInstrumentation(Instrumentation instrumentation,PackageManager packageManager) {
+        mInstrumentation = instrumentation;
+        mPackageManager = packageManager;
+    }
+
+
+    public ActivityResult execStartActivity(
+            Context who, IBinder contextThread, IBinder token, Activity target,
+            Intent intent, int requestCode, Bundle options) {
+
+        List<ResolveInfo> resolveInfo = mPackageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+        //判断启动的插件Activity是否在AndroidManifest.xml中注册过
+        if (null == resolveInfo || resolveInfo.size() == 0) {
+            //保存目标插件
+            intent.putExtra(PluginConstant.PLUGIN_REAL_ACTIVITY, intent.getComponent().getClassName());
+            //设置为占坑Activity
+            intent.setClassName(intent.getComponent().getPackageName(), PluginConstant.PLUGIN_ACTIVITY_FOR_STANDARD);
+        }
+
+        try {
+            Method execStartActivity = Instrumentation.class.getDeclaredMethod("execStartActivity",
+                    Context.class, IBinder.class, IBinder.class, Activity.class,
+                    Intent.class, int.class, Bundle.class);
+            return (ActivityResult) execStartActivity.invoke(mInstrumentation, who, contextThread, token, target, intent, requestCode, options);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     @Override
     public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        if(intent != null){
+        if (intent != null) {
             Bundle bundle = intent.getExtras();
-            if(bundle != null){
+            if (bundle != null) {
                 //给Bundle设置classLoader以使Bundle中序列化对象可以直接转化为插件中的对象
                 //类似于在宿主中这么使用:TestInPlugin testInPlugin = (TestInPlugin)bundle.get("TestInPlugin");
                 //TestInPlugin是在插件中定义的,如果不这么设置则会找不到TestInPlugin类
                 bundle.setClassLoader(PluginManager.mNowClassLoader);
-                if(className.equals("com.zeus.ZeusActivityForStandard")) {
+                if (className.equals("com.zeus.ZeusActivityForStandard")) {
                     String realActivity = bundle.getString(PluginConstant.PLUGIN_REAL_ACTIVITY);
                     if (!TextUtils.isEmpty(realActivity)) {
                         cl = PluginManager.mNowClassLoader;
                         String pkg = intent != null && intent.getComponent() != null
                                 ? intent.getComponent().getPackageName() : null;
-                        System.out.println(pkg+"--->aaa");
+                        System.out.println(pkg + "--->aaa");
 //                        return getFactory(pkg).instantiateActivity(cl, className, intent);
                         return super.newActivity(cl, realActivity, intent);
                     }
                 }
             }
         }
+
         return super.newActivity(cl, className, intent);
     }
 

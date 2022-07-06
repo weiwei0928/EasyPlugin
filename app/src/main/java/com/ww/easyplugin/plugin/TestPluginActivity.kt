@@ -33,7 +33,7 @@ class TestPluginActivity : ZeusBaseActivity() {
         title = "插件测试"
 
         plugin_test.setOnClickListener { startPlugin() }
-        plugin_install.setOnClickListener { installPlugin("zeusplugin_test_version2") }
+        plugin_install.setOnClickListener { installPlugin("plugin_test_version2.apk") }
     }
 
     /**
@@ -49,9 +49,9 @@ class TestPluginActivity : ZeusBaseActivity() {
             val cl: Class<*> = PluginManager.mNowClassLoader.loadClass(className)
             val intent = Intent(this, cl)
             //这种方式为通过在宿主AndroidManifest.xml中预埋activity实现
-//            startActivity(intent);
+            startActivity(intent);
             //这种方式为通过欺骗android系统的activity存在性校验的方式实现
-            PluginManager.startActivity(this, intent)
+//            PluginManager.startActivity(this, intent)
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()
         }
@@ -75,7 +75,7 @@ class TestPluginActivity : ZeusBaseActivity() {
             val temp = ByteArray(2048)
             var len: Int
             while (ins.read(temp).also { len = it } > 0) {
-                out!!.write(temp, 0, len)
+                out?.write(temp, 0, len)
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -8,7 +8,7 @@ import java.util.HashMap
 class EasyPluginApplication : Application() {
 
     companion object {
-        const val PLUGIN_TEST = "zeusplugin_test" //插件测试demo
+        const val PLUGIN_TEST = "plugin_test" //插件测试demo
 //        const val PLUGIN_TEST = "app-debug" //插件测试demo
         const val HOTFIX_TEST = "zeushotfix_test" //热修复补丁测试demo
     }

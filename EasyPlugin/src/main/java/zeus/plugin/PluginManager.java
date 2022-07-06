@@ -3,6 +3,7 @@ package zeus.plugin;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,7 +38,6 @@ import dalvik.system.DexClassLoader;
  * 插件管理类，管理插件的初始化、安装、卸载、加载等等
  * 所有的方法和对象都为静态。
  * <p/>
- * Created by huangjian on 2016/6/21.
  */
 public class PluginManager {
 
@@ -88,7 +88,8 @@ public class PluginManager {
         mBaseResources = mNowResources;
         //更改系统的Instrumentation对象，以便创建插件的activity
         Object mMainThread = PluginUtil.getField(mBaseContext, "mMainThread");
-        PluginUtil.setField(mMainThread, "mInstrumentation", new ZeusInstrumentation());
+        Object mInstrumentation = PluginUtil.getField(mMainThread, "mInstrumentation");
+        PluginUtil.setField(mMainThread, "mInstrumentation", new ZeusInstrumentation((Instrumentation) mInstrumentation,application.getPackageManager()));
         //创建插件的相关文件夹目录
         createPath();
         //加载已安装过的插件

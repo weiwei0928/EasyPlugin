@@ -8,10 +8,11 @@ import android.util.Log
 import zeus.plugin.PluginConstant
 import zeus.plugin.PluginManager
 
-@SuppressLint("StaticFieldLeak")
-object ServiceManager {
+open class ServiceManager {
 
-    private const val TAG = "ServiceManager"
+    companion object{
+        private const val TAG = "ServiceManager"
+    }
 
     private var service: Service? = null
 
@@ -26,7 +27,7 @@ object ServiceManager {
             try {
                 val pkg = if (intent != null && intent.component != null) intent.component!!
                     .packageName else null
-                println("$pkg--->aaa")
+                Log.d(TAG, "onStartCommand: $pkg")
 
                 Log.d(TAG, "startPlugin: $realServiceName")
                 val cl: Class<*> = PluginManager.mNowClassLoader.loadClass(realServiceName)
@@ -34,6 +35,7 @@ object ServiceManager {
 
                 service?.onStartCommand(intent, flags, startId)
             } catch (e: Exception) {
+                Log.d(TAG, "onStartCommand: $e")
             }
         }
 

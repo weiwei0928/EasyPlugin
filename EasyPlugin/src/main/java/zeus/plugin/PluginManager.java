@@ -830,21 +830,15 @@ public class PluginManager {
 
     }
 
-    public static void startService(Intent intent) {
+    public static ComponentName startService(Intent intent) {
 
         ComponentName componentName = intent.getComponent();
         intent.setClassName(componentName.getPackageName(), PluginConstant.PLUGIN_SERVICE_FOR_STANDARD);
         intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, componentName.getClassName());
-        mBaseContext.startService(intent);
-
+        return mBaseContext.startService(intent);
     }
 
     public static void bindService(Activity activity,Intent intent) {
-
-        ComponentName componentName = intent.getComponent();
-        intent.setClassName(componentName.getPackageName(), PluginConstant.PLUGIN_SERVICE_FOR_STANDARD);
-        intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, componentName.getClassName());
-        mBaseContext.startService(intent);
 
     }
 

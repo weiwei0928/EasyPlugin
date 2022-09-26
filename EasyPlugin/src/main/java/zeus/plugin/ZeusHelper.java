@@ -25,7 +25,7 @@ public class ZeusHelper {
      * @param name          server的名字
      * @return systemServer对象
      */
-    public static Object getSystemService(Context context, Object systemServcie, String name) {
+    public Object getSystemService(Context context, Object systemServcie, String name) {
         if (Context.LAYOUT_INFLATER_SERVICE.equals(name)) {
             LayoutInflater inflater = (LayoutInflater) systemServcie;
             inflater.cloneInContext(context);

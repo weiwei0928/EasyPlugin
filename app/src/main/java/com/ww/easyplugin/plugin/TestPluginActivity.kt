@@ -33,7 +33,7 @@ class TestPluginActivity : ZeusBaseActivity() {
         title = "插件测试"
 
         plugin_test.setOnClickListener { startPlugin() }
-        plugin_install.setOnClickListener { installPlugin("plugin_test_version2.apk") }
+        plugin_install.setOnClickListener { installPlugin("plugin_sample1_version2.apk") }
     }
 
     /**
@@ -41,10 +41,10 @@ class TestPluginActivity : ZeusBaseActivity() {
      *
      */
     private fun startPlugin() {
-        PluginManager.loadLastVersionPlugin(EasyPluginApplication.PLUGIN_TEST)
+        PluginManager.loadLastVersionPlugin(EasyPluginApplication.PLUGIN_SAMPLE1)
         try {
 
-            var className = PluginManager.getPlugin(EasyPluginApplication.PLUGIN_TEST).pluginMeta.mainClass
+            var className = PluginManager.getPlugin(EasyPluginApplication.PLUGIN_SAMPLE1).pluginMeta.mainClass
             Log.d(TAG, "startPlugin: $className")
             val cl: Class<*> = PluginManager.mNowClassLoader.loadClass(className)
             val intent = Intent(this, cl)
@@ -59,19 +59,19 @@ class TestPluginActivity : ZeusBaseActivity() {
 
     /**
      * 安装assets中高版本插件plugin_test_version2.apk
-     * 先拷贝到PluginUtil.getZipPath(PluginConfig.PLUGIN_TEST)
+     * 先拷贝到PluginUtil.getZipPath(PluginConfig.PLUGIN_SAMPLE1)
      * 然后调用install()安装。
      *
      */
     private fun installPlugin(apkName: String) {
-        val zeusPlugin: ZeusPlugin = PluginManager.getPlugin(EasyPluginApplication.PLUGIN_TEST)
+        val zeusPlugin: ZeusPlugin = PluginManager.getPlugin(EasyPluginApplication.PLUGIN_SAMPLE1)
         var out: FileOutputStream? = null
         var ins: InputStream? = null
         try {
             val am: AssetManager = PluginManager.mBaseResources.assets
             ins = am.open(apkName)
-            PluginUtil.createDirWithFile(PluginUtil.getZipPath(EasyPluginApplication.PLUGIN_TEST))
-            out = FileOutputStream(PluginUtil.getZipPath(EasyPluginApplication.PLUGIN_TEST), false)
+            PluginUtil.createDirWithFile(PluginUtil.getZipPath(EasyPluginApplication.PLUGIN_SAMPLE1))
+            out = FileOutputStream(PluginUtil.getZipPath(EasyPluginApplication.PLUGIN_SAMPLE1), false)
             val temp = ByteArray(2048)
             var len: Int
             while (ins.read(temp).also { len = it } > 0) {

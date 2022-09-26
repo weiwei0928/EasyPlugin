@@ -1,8 +1,13 @@
 package zeus.plugin;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
+
+import androidx.annotation.Nullable;
 
 /**
  * 基础的activity
@@ -45,5 +50,20 @@ public class ZeusBaseActivity extends Activity {
     public Resources.Theme getSuperTheme() {
         return super.getTheme();
     }
-    //---------------------------插件相关代码-------------------------end
+
+    @Override
+    public void startActivity(Intent intent) {
+        PluginManager.startActivity(intent);
+    }
+
+    @Nullable
+    @Override
+    public ComponentName startService(Intent intent) {
+        return PluginManager.startService(intent);
+    }
+
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        return super.bindService(service, conn, flags);
+    }
 }

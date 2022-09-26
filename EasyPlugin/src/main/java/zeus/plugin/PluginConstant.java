@@ -8,7 +8,8 @@ public class PluginConstant {
     /**
      * 插件配置文件存放的路径，没有放到manifest中的meta data是因为有些手机取不到这个值
      */
-    public static final String PLUGINWEB_MAINIFEST_FILE = "assets/zeusplugin.meta";
+//    public static final String PLUGINWEB_MAINIFEST_FILE = "assets/zeusplugin.meta";
+    public static final String PLUGINWEB_MAINIFEST_FILE = "assets/plugin.meta";
     /**
      * 有些手机中DexFile只能接受.apk和.jar后缀，所以这里二选一，如果是sd卡上最好用jar，因为apk会被当成未安装apk被清理软件清理。
      */

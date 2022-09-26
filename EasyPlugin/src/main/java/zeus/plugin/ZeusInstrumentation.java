@@ -26,6 +26,7 @@ public class ZeusInstrumentation extends Instrumentation {
     }
 
 
+    //尽量不使用这种方式启动
     public ActivityResult execStartActivity(
             Context who, IBinder contextThread, IBinder token, Activity target,
             Intent intent, int requestCode, Bundle options) {
@@ -64,13 +65,12 @@ public class ZeusInstrumentation extends Instrumentation {
                 //类似于在宿主中这么使用:TestInPlugin testInPlugin = (TestInPlugin)bundle.get("TestInPlugin");
                 //TestInPlugin是在插件中定义的,如果不这么设置则会找不到TestInPlugin类
                 bundle.setClassLoader(PluginManager.mNowClassLoader);
-                if (className.equals("com.zeus.ZeusActivityForStandard")) {
+                if ("com.zeus.ZeusActivityForStandard".equals(className)) {
                     String realActivity = bundle.getString(PluginConstant.PLUGIN_REAL_ACTIVITY);
                     if (!TextUtils.isEmpty(realActivity)) {
                         cl = PluginManager.mNowClassLoader;
                         String pkg = intent != null && intent.getComponent() != null
                                 ? intent.getComponent().getPackageName() : null;
-                        System.out.println(pkg + "--->aaa");
 //                        return getFactory(pkg).instantiateActivity(cl, className, intent);
                         return super.newActivity(cl, realActivity, intent);
                     }

@@ -10,18 +10,16 @@ import com.ww.ServiceManager
 
 class StubService : Service() {
 
-//    private val serviceManager : Lazy<ServiceManager> = lazy { ServiceManager() }
-
-
-
+    private val serviceManager by lazy { ServiceManager() }
     override fun onCreate() {
         super.onCreate()
+        serviceManager.onCreate()
         Log.d("StubService", "onCreate")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("StubService", "onStartCommand")
-        ServiceManager.onStartCommand(intent, flags, startId)
+        serviceManager.onStartCommand(intent, flags, startId)
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -35,7 +33,7 @@ class StubService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        ServiceManager.onDestroy()
+        serviceManager.onDestroy()
         Log.d("StubService", "onDestroy")
     }
 }

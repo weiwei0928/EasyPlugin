@@ -8,8 +8,8 @@ import java.util.HashMap
 class EasyPluginApplication : Application() {
 
     companion object {
-        const val PLUGIN_TEST = "plugin_test" //插件测试demo
-//        const val PLUGIN_TEST = "app-debug" //插件测试demo
+//        const val PLUGIN_TEST = "plugin_test" //插件测试demo
+        const val PLUGIN_SAMPLE1 = "plugin_sample1" //插件1
         const val HOTFIX_TEST = "zeushotfix_test" //热修复补丁测试demo
     }
 
@@ -24,7 +24,7 @@ class EasyPluginApplication : Application() {
          */
         //补丁必须以EXP_PLUG_HOT_FIX_PREFIX开头
         //插件必须以PluginUtil.EXP_PLUG_PREFIX开头，否则不会识别为插件
-        defaultList[PLUGIN_TEST] = 1
+        defaultList[PLUGIN_SAMPLE1] = 1
         PluginManager.init(this, defaultList)
     }
 

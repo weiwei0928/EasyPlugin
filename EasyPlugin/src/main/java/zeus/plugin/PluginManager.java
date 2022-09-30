@@ -7,6 +7,7 @@ import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,6 +17,8 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+
+import com.ww.ServiceHostProxyManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,7 +44,7 @@ import dalvik.system.DexClassLoader;
  */
 public class PluginManager {
 
-    private static final String PLUGIN_INSTALLED_LIST_FILE_NAME = "plugin.installedlist"; //已安装插件列表的文件地址
+    private static final String PLUGIN_INSTALLED_LIST_FILE_NAME = "plugin.installedList"; //已安装插件列表的文件地址
 
     /*start---这些对象的强引用系统也会一直持有，所以这里不会有内存泄漏---start*/
     public static volatile ClassLoader mNowClassLoader = null;          //正在使用的ClassLoader
@@ -54,19 +57,23 @@ public class PluginManager {
 
     private static HashMap<String, PluginManifest> mInstalledPluginList = null; //已安装的插件列表
     private static HashMap<String, PluginManifest> mLoadedPluginList = null;    //已加载的插件列表
-    private static HashMap<String, String> mLoadedDiffPluginPathinfoList = null;
+    private static HashMap<String, String> mLoadedDiffPluginPathInfoList = null;
 
     private static final Object mInstalledPluginListLock = new Object(); //插件安装的锁，支持多线程安装
     private static final Object mLoadedPluginListLock = new Object();    //修改已加载的插件对象的锁
     private static final Object mLoadLock = new Object();                //插件加载的锁，支持多线程加载
 
-    private static boolean isIniteInstallPlugins = false;                //插件是否已经初始化
+    private static boolean isInitInstallPlugins = false;                //插件是否已经初始化
 
     private static HashMap<String, Integer> mDefaultList;
     /**
      * 缓存插件的对象
      */
-    private static HashMap<String, ZeusPlugin> mPluginMap = new HashMap<>();
+    private static HashMap<String, ZeusPlugin> sPluginMap = new HashMap<>();
+    /**
+     * 预注册的service集合
+     */
+    private static HashMap<String, String> sServiceMap = new HashMap<>();
 
     /**
      * 得在插件相关的方法调用之前调用
@@ -92,6 +99,7 @@ public class PluginManager {
         PluginUtil.setField(mMainThread, "mInstrumentation", new ZeusInstrumentation((Instrumentation) mInstrumentation,application.getPackageManager()));
         //创建插件的相关文件夹目录
         createPath();
+        initServiceMap();
         //加载已安装过的插件
         loadInstalledPlugins();
         //清除老版本的插件，最好放到软件退出时调用，防止让启动速度变慢
@@ -107,6 +115,10 @@ public class PluginManager {
         initPluginThread.start();
     }
 
+    private static void initServiceMap() {
+
+    }
+
     private static void createPath() {
         PluginUtil.createDir(PluginUtil.getInsidePluginPath());
     }
@@ -114,7 +126,7 @@ public class PluginManager {
     /**
      * 在android 5.0以上设置resource的share lib path，解决加载webView时package id not found的问题
      * 系统会在加载webView之后通过调用AssetManager中的addAssetPathAsSharedLibrary(7.0以上)或者addAssetPath(5.0-7.0之间)
-     * 将webview使用的资源apk添加到AssetManager中，因此重新生成AssetManager时也需要对应的设置一下
+     * 将webView使用的资源apk添加到AssetManager中，因此重新生成AssetManager时也需要对应的设置一下
      * @param resources
      * @param orgAssetManger
      */
@@ -231,11 +243,11 @@ public class PluginManager {
             if (mLoadedPluginList == null) {
                 mLoadedPluginList = new HashMap<>();
             }
-            if(mLoadedDiffPluginPathinfoList == null){
-                mLoadedDiffPluginPathinfoList = new HashMap<>();
+            if(mLoadedDiffPluginPathInfoList == null){
+                mLoadedDiffPluginPathInfoList = new HashMap<>();
             }
             mLoadedPluginList.put(pluginId, pluginManifest);
-            mLoadedDiffPluginPathinfoList.put(pluginId, pathinfo);
+            mLoadedDiffPluginPathInfoList.put(pluginId, pathinfo);
         }
     }
 
@@ -509,7 +521,7 @@ public class PluginManager {
     }
     private static void clearViewConstructorCache1() {
         try {
-            Field field = LayoutInflater.class.getDeclaredField("sConstructorMap");
+            @SuppressLint("SoonBlockedPrivateApi") Field field = LayoutInflater.class.getDeclaredField("sConstructorMap");
             field.setAccessible(true);
             Map map = (Map) field.get(null);
             map.clear();
@@ -617,7 +629,7 @@ public class PluginManager {
                     //只有带有资源的补丁才会执行添加到assetManager中
                     PluginManifest manifest = mLoadedPluginList.get(id);
                     if (manifest.hasResoures()) {
-                        addAssetPath.invoke(assetManager, PluginUtil.getAPKPath(id, mLoadedDiffPluginPathinfoList.get(id)));
+                        addAssetPath.invoke(assetManager, PluginUtil.getAPKPath(id, mLoadedDiffPluginPathInfoList.get(id)));
                     }
                 }
             }
@@ -735,12 +747,12 @@ public class PluginManager {
 
     private static void loadInstalledPlugins() {
         synchronized (mLoadLock) {
-            if (isIniteInstallPlugins) {
+            if (isInitInstallPlugins) {
                 return;
             }
             HashMap<String, PluginManifest> installedPluginMaps = getInstalledPlugin();
             if (installedPluginMaps.isEmpty()) {
-                isIniteInstallPlugins = true;
+                isInitInstallPlugins = true;
                 return;
             }
             //获取classloader设置classloader
@@ -770,7 +782,7 @@ public class PluginManager {
             }
             clearViewConstructorCache();
             if (!isNeedLoadResource) {
-                isIniteInstallPlugins = true;
+                isInitInstallPlugins = true;
                 return;
             }
             //设置原始APK所使用的ClassLoader
@@ -780,7 +792,7 @@ public class PluginManager {
                 mNowClassLoader = classLoader;
             }
             reloadInstalledPluginResources();
-            isIniteInstallPlugins = true;
+            isInitInstallPlugins = true;
         }
     }
 
@@ -806,14 +818,14 @@ public class PluginManager {
     public static ZeusPlugin getPlugin(String pluginId) {
         ZeusPlugin plugin = null;
         try {
-            plugin = mPluginMap.get(pluginId);
+            plugin = sPluginMap.get(pluginId);
             if (plugin != null) {
                 return plugin;
             }
             if (PluginUtil.iszeusPlugin(pluginId)) {
                 plugin = new ZeusPlugin(pluginId);
             }
-            mPluginMap.put(pluginId, plugin);
+            sPluginMap.put(pluginId, plugin);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -833,13 +845,18 @@ public class PluginManager {
     public static ComponentName startService(Intent intent) {
 
         ComponentName componentName = intent.getComponent();
-        intent.setClassName(componentName.getPackageName(), PluginConstant.PLUGIN_SERVICE_FOR_STANDARD);
-        intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, componentName.getClassName());
+        String className = componentName.getClassName();
+        intent.setClassName(componentName.getPackageName(), ServiceHostProxyManager.INSTANCE.getProxyServiceName(className));
+        intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, className);
         return mBaseContext.startService(intent);
     }
 
-    public static void bindService(Activity activity,Intent intent) {
-
+    public static boolean bindService(Intent intent, ServiceConnection conn, int flags) {
+        ComponentName componentName = intent.getComponent();
+        String className = componentName.getClassName();
+        intent.setClassName(componentName.getPackageName(), ServiceHostProxyManager.INSTANCE.getProxyServiceName(className));
+        intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, className);
+        return mBaseContext.bindService(intent,conn,flags);
     }
 
     public static void fixAppCompatActivity() {

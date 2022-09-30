@@ -12,7 +12,7 @@ import dalvik.system.DexFile;
  * <p>
  * Created by huangjian on 2016/6/21.
  */
-class ZeusPluginClassLoader extends ClassLoader {
+public class  ZeusPluginClassLoader extends ClassLoader {
 
     protected String mRawLibPath;
     protected final String mDexOutputPath;

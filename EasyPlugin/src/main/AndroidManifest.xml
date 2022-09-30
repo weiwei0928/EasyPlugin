@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ww.EasyPlugin">
+    package="com.ww">
 
+    <application>
+        <service
+            android:name=".ServiceHostProxy$P1"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P2"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P3"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P4"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P5"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P6"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P7"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P8"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P9"
+            android:exported="false" />
+        <service
+            android:name="ServiceHostProxy$P10"
+            android:exported="false" />
+    </application>
 </manifest>

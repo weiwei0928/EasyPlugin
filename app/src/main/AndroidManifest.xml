@@ -33,7 +33,6 @@
         <!--校验用的activity,为了骗过android的activity存在校验-->
         <activity android:name="com.zeus.ZeusActivityForStandard"/>
 
-        <service android:name=".plugin.StubService"/>
     </application>
 
 </manifest>

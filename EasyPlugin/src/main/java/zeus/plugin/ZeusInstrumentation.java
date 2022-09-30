@@ -15,6 +15,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 
+/**
+ * @author ww
+ */
 public class ZeusInstrumentation extends Instrumentation {
 
     private Instrumentation mInstrumentation;
@@ -26,7 +29,7 @@ public class ZeusInstrumentation extends Instrumentation {
     }
 
 
-    //尽量不使用这种方式启动
+    //尽量不使用这种方式启动,我们使用gradle插件字节码替换所有activity没必要使用这个方法了
     public ActivityResult execStartActivity(
             Context who, IBinder contextThread, IBinder token, Activity target,
             Intent intent, int requestCode, Bundle options) {

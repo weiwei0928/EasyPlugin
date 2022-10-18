@@ -33,7 +33,7 @@ class TestPluginActivity : ZeusBaseActivity() {
         title = "插件测试"
 
         plugin_test.setOnClickListener { startPlugin() }
-        plugin_install.setOnClickListener { installPlugin("plugin_sample1_version2.apk") }
+        plugin_update.setOnClickListener { installPlugin("plugin_sample1_version2.apk") }
     }
 
     /**

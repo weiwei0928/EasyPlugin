@@ -251,7 +251,7 @@ public class ZeusPlugin {
             meta.minVersion = jObject.optString(PluginManifest.PLUG_MIN_VERSION);
             meta.maxVersion = jObject.optString(PluginManifest.PLUG_MAX_VERSION);
             meta.version = jObject.optString(PluginManifest.PLUG_VERSION);
-            meta.mainClass = jObject.optString(PluginManifest.PLUG_MAINCLASS);
+            meta.mainClass = jObject.optString(PluginManifest.PLUG_MAIN_CLASS);
             meta.otherInfo = jObject.optString(PluginManifest.PLUG_OTHER_INFO);
         } catch (Exception e) {
             e.printStackTrace();

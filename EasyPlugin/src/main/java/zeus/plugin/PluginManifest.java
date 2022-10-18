@@ -8,14 +8,13 @@ import org.json.JSONObject;
 /**
  * 插件的配置，对应文件存放在插件apk下的assets/plugin.meta,这也是可配置的
  * 之所以没有放在androidManifest.xml中是因为有些手机使用无法获取插件中对应的meta data数据。
- * 其实还有一套完整强安全校验方案，想到绝大部分人用不到，就删掉了，想要的可以在单独联系。
  */
 public class PluginManifest {
     public static final String PLUG_NAME = "name";
     public static final String PLUG_MIN_VERSION = "minVersion";
     public static final String PLUG_MAX_VERSION = "maxVersion";
     public static final String PLUG_VERSION = "version";
-    public static final String PLUG_MAINCLASS = "mainClass";
+    public static final String PLUG_MAIN_CLASS = "mainClass";
     public static final String PLUG_OTHER_INFO = "otherInfo";
     public static final String PLUG_FLAG = "flag";
     public static final int FLAG_WITHOUT_RESOURCES = 0x1;
@@ -45,6 +44,7 @@ public class PluginManifest {
      */
     public String otherInfo = "";
 
+    //插件是否含有资源文件或者so文件
     public String flag = "";
 
     public PluginManifest() {
@@ -57,7 +57,7 @@ public class PluginManifest {
             minVersion = jsonObject.optString(PLUG_MIN_VERSION);
             maxVersion = jsonObject.optString(PLUG_MAX_VERSION);
             version = jsonObject.optString(PLUG_VERSION);
-            mainClass = jsonObject.optString(PLUG_MAINCLASS);
+            mainClass = jsonObject.optString(PLUG_MAIN_CLASS);
             otherInfo = jsonObject.optString(PLUG_OTHER_INFO);
             flag = jsonObject.optString(PLUG_FLAG);
         } catch (JSONException e) {
@@ -81,7 +81,7 @@ public class PluginManifest {
         return TextUtils.isEmpty(flag) ? 0 : Integer.valueOf(flag);
     }
 
-    public boolean hasResoures() {
+    public boolean hasResources() {
         return (getFlag() & FLAG_WITHOUT_RESOURCES) != FLAG_WITHOUT_RESOURCES;
     }
 
@@ -96,7 +96,7 @@ public class PluginManifest {
             jsonObject.put(PLUG_MIN_VERSION, minVersion);
             jsonObject.put(PLUG_MAX_VERSION, maxVersion);
             jsonObject.put(PLUG_VERSION, version);
-            jsonObject.put(PLUG_MAINCLASS, mainClass);
+            jsonObject.put(PLUG_MAIN_CLASS, mainClass);
             jsonObject.put(PLUG_OTHER_INFO, otherInfo);
             jsonObject.put(PLUG_OTHER_INFO, flag);
         } catch (JSONException e) {

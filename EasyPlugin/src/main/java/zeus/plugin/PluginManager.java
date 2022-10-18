@@ -174,6 +174,16 @@ public class PluginManager {
             if (defaultVersion > installVersion) {
                 boolean ret = plugin.installAssetPlugin();
                 //提前将dex文件优化为odex或者opt文件
+
+                /**
+                 *  odex文件有两个优点：
+                 *
+                 *  体积比dex更小，它是应用启动前已优化的部分程序。
+                 *  更安全，令攻击者更难读取应用内容
+                 *  指定odex目录后创建DexclassLoader，其构造方法会最终调用DexPathList.makeDexElements加载dex文件，
+                 *  最终将odex路径赋值给RuntimeClassLoader，ApkClassLoader。
+                 *
+                 */
                 if (ret) {
                     try {
                         new DexClassLoader(PluginUtil.getAPKPath(key), PluginUtil.getDexCacheParentDirectPath(key), null, mBaseClassLoader.getParent());
@@ -369,11 +379,11 @@ public class PluginManager {
      * 加载某个插件，如果已经加载了直接返回
      * 如果已经加载了老版本插件，而新版本插件也安装了，此方法也不会加载最新版本的插件
      *
-     * @param pluingId 插件的ID
+     * @param pluginId 插件的ID
      * @return 是否加载成功
      */
-    public static boolean loadPlugin(String pluingId) {
-        return loadLastVersionPlugin(pluingId);
+    public static boolean loadPlugin(String pluginId) {
+        return loadLastVersionPlugin(pluginId);
     }
 
     /**
@@ -382,17 +392,17 @@ public class PluginManager {
      * 如果运行过程中可能会出现class不一致的情况，但也不是一定的，有的插件还是可以运行时调用的，
      * 但通常生效都得下次进入插件时才生效，但不必退出软件再进才生效
      *
-     * @param pluingId 插件的ID
+     * @param pluginId 插件的ID
      * @return 是否加载成功
      */
-    public static boolean loadLastVersionPlugin(String pluingId) {
-        ZeusPlugin plugin = getPlugin(pluingId);
+    public static boolean loadLastVersionPlugin(String pluginId) {
+        ZeusPlugin plugin = getPlugin(pluginId);
         PluginManifest meta = plugin.getPluginMeta();
         int version = -1;
         if (meta != null) {
             version = Integer.valueOf(meta.version);
         }
-        return loadPlugin(pluingId, version);
+        return loadPlugin(pluginId, version);
     }
 
     /**
@@ -628,7 +638,7 @@ public class PluginManager {
                 for (String id : mLoadedPluginList.keySet()) {
                     //只有带有资源的补丁才会执行添加到assetManager中
                     PluginManifest manifest = mLoadedPluginList.get(id);
-                    if (manifest.hasResoures()) {
+                    if (manifest.hasResources()) {
                         addAssetPath.invoke(assetManager, PluginUtil.getAPKPath(id, mLoadedDiffPluginPathInfoList.get(id)));
                     }
                 }

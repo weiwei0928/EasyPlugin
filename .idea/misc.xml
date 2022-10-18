@@ -5,6 +5,8 @@
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_plugin.xml" value="0.33016304347826086" />
+        <entry key="app/src/main/res/layout/fragment_main.xml" value="0.2916666666666667" />
+        <entry key="app/src/main/res/layout/layout_bottom_navigation_bar.xml" value="0.2916666666666667" />
       </map>
     </option>
   </component>

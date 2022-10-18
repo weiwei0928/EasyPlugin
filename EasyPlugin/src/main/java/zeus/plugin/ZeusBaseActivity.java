@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.res.Resources;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * 基础的activity

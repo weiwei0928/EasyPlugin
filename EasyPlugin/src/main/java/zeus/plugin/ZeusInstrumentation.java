@@ -30,33 +30,34 @@ public class ZeusInstrumentation extends Instrumentation {
 
 
     //尽量不使用这种方式启动,我们使用gradle插件字节码替换所有activity没必要使用这个方法了
-    public ActivityResult execStartActivity(
-            Context who, IBinder contextThread, IBinder token, Activity target,
-            Intent intent, int requestCode, Bundle options) {
-
-        List<ResolveInfo> resolveInfo = mPackageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
-        //判断启动的插件Activity是否在AndroidManifest.xml中注册过
-        if (null == resolveInfo || resolveInfo.size() == 0) {
-            //保存目标插件
-            intent.putExtra(PluginConstant.PLUGIN_REAL_ACTIVITY, intent.getComponent().getClassName());
-            //设置为占坑Activity
-            intent.setClassName(intent.getComponent().getPackageName(), PluginConstant.PLUGIN_ACTIVITY_FOR_STANDARD);
-        }
-
-        try {
-            Method execStartActivity = Instrumentation.class.getDeclaredMethod("execStartActivity",
-                    Context.class, IBinder.class, IBinder.class, Activity.class,
-                    Intent.class, int.class, Bundle.class);
-            return (ActivityResult) execStartActivity.invoke(mInstrumentation, who, contextThread, token, target, intent, requestCode, options);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    @Deprecated
+//    public ActivityResult execStartActivity(
+//            Context who, IBinder contextThread, IBinder token, Activity target,
+//            Intent intent, int requestCode, Bundle options) {
+//
+//        List<ResolveInfo> resolveInfo = mPackageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+//        //判断启动的插件Activity是否在AndroidManifest.xml中注册过
+//        if (null == resolveInfo || resolveInfo.size() == 0) {
+//            //保存目标插件
+//            intent.putExtra(PluginConstant.PLUGIN_REAL_ACTIVITY, intent.getComponent().getClassName());
+//            //设置为占坑Activity
+//            intent.setClassName(intent.getComponent().getPackageName(), PluginConstant.PLUGIN_ACTIVITY_FOR_STANDARD);
+//        }
+//
+//        try {
+//            Method execStartActivity = Instrumentation.class.getDeclaredMethod("execStartActivity",
+//                    Context.class, IBinder.class, IBinder.class, Activity.class,
+//                    Intent.class, int.class, Bundle.class);
+//            return (ActivityResult) execStartActivity.invoke(mInstrumentation, who, contextThread, token, target, intent, requestCode, options);
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
 
     @Override

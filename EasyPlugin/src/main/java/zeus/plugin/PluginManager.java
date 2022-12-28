@@ -476,6 +476,7 @@ public class PluginManager {
         return true;
     }
 
+    //宿主的版本是否支持该插件，大部分情况下宿主是支持所有插件的
     private static boolean isSupport(String pluginId){
         int versionCode = -1;
         try {

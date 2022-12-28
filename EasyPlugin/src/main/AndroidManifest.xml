@@ -3,6 +3,7 @@
     package="com.ww">
 
     <application>
+        <activity android:name="com.zeus.ZeusActivityForStandard"/>
         <service
             android:name=".ServiceHostProxy$P1"
             android:exported="false" />

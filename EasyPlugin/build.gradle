@@ -40,7 +40,7 @@ android {
         abortOnError false
     }
 }
-def versionName = "1.0.0-SNAPSHOT" // 当前版本依赖库版本号，这个jitpack不会使用到，只是我们开发者自己查看
+def versionName = "1.0.0-beta-0" // 当前版本依赖库版本号，这个jitpack不会使用到，只是我们开发者自己查看
 
 afterEvaluate {
     publishing {
@@ -60,7 +60,8 @@ afterEvaluate {
                 def releasesRepoUrl = "$baseUrl/repos/releases"
                 def snapshotsRepoUrl = "$baseUrl/repos/snapshots"
                 println("weiwei--->$versionName")
-                url = versionName.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                url = versionName.endsWith('RELEASE') ? releasesRepoUrl : snapshotsRepoUrl
+                println("url--->$url")
             }
         }
     }

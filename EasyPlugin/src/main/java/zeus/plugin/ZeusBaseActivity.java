@@ -1,6 +1,5 @@
 package zeus.plugin;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * 基础的activity
  * Created by huangjian on 2016/6/21.
  */
-public class ZeusBaseActivity extends Activity {
+public class ZeusBaseActivity extends AppCompatActivity {
 
     //---------------------插件相关的代码-----------------------start
     ZeusHelper helper = new ZeusHelper();

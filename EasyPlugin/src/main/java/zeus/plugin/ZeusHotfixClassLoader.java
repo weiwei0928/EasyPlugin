@@ -34,15 +34,15 @@ class ZeusHotfixClassLoader extends ZeusPluginClassLoader {
     }
 
     protected void addAPKPath(String dexPath, String libPath) {
-        if(mDexs == null){
+        if(mDexFiles == null){
             ensureInit();
         }
-        int oldLength = mDexs.length;
+        int oldLength = mDexFiles.length;
         int index = oldLength + 1;
 
-        Object[] old = mDexs;
-        mDexs = new DexFile[index];
-        arraycopy(old, 0, mDexs, 0, index - 1);
+        Object[] old = mDexFiles;
+        mDexFiles = new DexFile[index];
+        arraycopy(old, 0, mDexFiles, 0, index - 1);
 
         old = mFiles;
         mFiles = new File[index];
@@ -77,7 +77,7 @@ class ZeusHotfixClassLoader extends ZeusPluginClassLoader {
         try {
             String outputName =
                     generateOutputName(dexPath, mDexOutputPath);
-            mDexs[oldLength] = DexFile.loadDex(dexPath, outputName, 0);
+            mDexFiles[oldLength] = DexFile.loadDex(dexPath, outputName, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,9 +93,9 @@ class ZeusHotfixClassLoader extends ZeusPluginClassLoader {
         int length = mFiles.length;
         for (int i = 0; i < length; i++) {
 
-            if (mDexs[i] != null) {
+            if (mDexFiles[i] != null) {
                 String slashName = name.replace('.', '/');
-                clazz = mDexs[i].loadClass(slashName, mChild);
+                clazz = mDexFiles[i].loadClass(slashName, mChild);
                 if (clazz != null) {
                     return clazz;
                 }

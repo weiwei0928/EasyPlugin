@@ -3,7 +3,6 @@ package zeus.plugin;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
-import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -96,7 +95,7 @@ public class PluginManager {
         //更改系统的Instrumentation对象，以便创建插件的activity
         Object mMainThread = PluginUtil.getField(mBaseContext, "mMainThread");
         Object mInstrumentation = PluginUtil.getField(mMainThread, "mInstrumentation");
-        PluginUtil.setField(mMainThread, "mInstrumentation", new ZeusInstrumentation((Instrumentation) mInstrumentation,application.getPackageManager()));
+        PluginUtil.setField(mMainThread, "mInstrumentation", new ZeusInstrumentation());
         //创建插件的相关文件夹目录
         createPath();
         initServiceMap();
@@ -138,16 +137,16 @@ public class PluginManager {
                 if(getLoadedPackageInfoMethod != null){
                     packageInfo = (PackageInfo)getLoadedPackageInfoMethod.invoke(null);
                 }
-                String webviewApk;
+                String webViewApk;
                 if (packageInfo != null && packageInfo.applicationInfo != null) {
-                    webviewApk = packageInfo.applicationInfo.sourceDir;
+                    webViewApk = packageInfo.applicationInfo.sourceDir;
                     AssetManager assetManager = resources.getAssets();
                     Method addAssetPathAsSharedLibrary = PluginUtil.getMethod(assetManager.getClass(), "addAssetPathAsSharedLibrary", String.class);
                     if (addAssetPathAsSharedLibrary != null) {
-                        addAssetPathAsSharedLibrary.invoke(orgAssetManger, webviewApk);
+                        addAssetPathAsSharedLibrary.invoke(orgAssetManger, webViewApk);
                     } else {
                         Method addAssetPath = PluginUtil.getMethod(assetManager.getClass(), "addAssetPath", String.class);
-                        addAssetPath.invoke(orgAssetManger, webviewApk);
+                        addAssetPath.invoke(orgAssetManger, webViewApk);
                     }
                 }
             } catch (Throwable throwable) {
@@ -591,26 +590,26 @@ public class PluginManager {
      * 清除resources中的图片缓存，降低内存消耗的一个办法
      * 不调用也不会产生严重问题
      *
-     * @param resouces resouces
+     * @param resources resources
      */
-    static private void clearResoucesDrawableCache(Object resouces) {
-        if (resouces == null) return;
-        Method flushLayoutCacheMethod = PluginUtil.getMethod(resouces.getClass(), "flushLayoutCache");
+    static private void clearResourcesDrawableCache(Object resources) {
+        if (resources == null) return;
+        Method flushLayoutCacheMethod = PluginUtil.getMethod(resources.getClass(), "flushLayoutCache");
         if (flushLayoutCacheMethod != null) {
             try {
-                flushLayoutCacheMethod.invoke(resouces);
+                flushLayoutCacheMethod.invoke(resources);
             } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
-        clearCacheObject(PluginUtil.getField(resouces, "mDrawableCache"));
-        clearCacheObject(PluginUtil.getField(resouces, "mColorDrawableCache"));
-        clearCacheObject(PluginUtil.getField(resouces, "mColorStateListCache"));
-        clearCacheObject(PluginUtil.getField(resouces, "mAnimatorCache"));
-        clearCacheObject(PluginUtil.getField(resouces, "mStateListAnimatorCache"));
+        clearCacheObject(PluginUtil.getField(resources, "mDrawableCache"));
+        clearCacheObject(PluginUtil.getField(resources, "mColorDrawableCache"));
+        clearCacheObject(PluginUtil.getField(resources, "mColorStateListCache"));
+        clearCacheObject(PluginUtil.getField(resources, "mAnimatorCache"));
+        clearCacheObject(PluginUtil.getField(resources, "mStateListAnimatorCache"));
 
         //清除对象池中的缓存
-        Object typedArrayPool = PluginUtil.getField(resouces, "mTypedArrayPool");
+        Object typedArrayPool = PluginUtil.getField(resources, "mTypedArrayPool");
         if (typedArrayPool != null) {
             Method acquirePath = PluginUtil.getMethod(typedArrayPool.getClass(), "acquire");
             try {
@@ -655,10 +654,10 @@ public class PluginManager {
 
             //清除一下之前的resource的数据，释放一些内存
             //因为这个resource有可能还被系统持有着，内存都没被释放
-            clearResoucesDrawableCache(mNowResources);
+            clearResourcesDrawableCache(mNowResources);
 
             mNowResources = newResources;
-            //需要清理mtheme对象，否则通过inflate方式加载资源会报错
+            //需要清理mTheme对象，否则通过inflate方式加载资源会报错
             PluginUtil.setField(mBaseContext, "mTheme", null);
         } catch (Throwable e) {
             e.printStackTrace();

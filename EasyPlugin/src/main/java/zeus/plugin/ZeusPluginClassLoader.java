@@ -12,13 +12,13 @@ import dalvik.system.DexFile;
  * <p>
  * Created by huangjian on 2016/6/21.
  */
-public class  ZeusPluginClassLoader extends ClassLoader {
+public class ZeusPluginClassLoader extends ClassLoader {
 
     protected String mRawLibPath;
     protected final String mDexOutputPath;
     protected File[] mFiles;
     protected ZipFile[] mZips;
-    protected DexFile[] mDexs;
+    protected DexFile[] mDexFiles;
     protected String[] mLibPaths;
 
     private boolean mInitialized;
@@ -26,7 +26,7 @@ public class  ZeusPluginClassLoader extends ClassLoader {
     final private String mPluginId;
 
     public ZeusPluginClassLoader(String pluginId, String dexPath, String dexOutputDir, String libPath,
-                                    ClassLoader parent) {
+                                 ClassLoader parent) {
 
         super(parent);
         if (dexPath == null || dexOutputDir == null)
@@ -58,7 +58,7 @@ public class  ZeusPluginClassLoader extends ClassLoader {
 
         mFiles = new File[length];
         mZips = new ZipFile[length];
-        mDexs = new DexFile[length];
+        mDexFiles = new DexFile[length];
 
         for (int i = 0; i < length; i++) {
             File pathFile = new File(dexPathList[i]);
@@ -74,7 +74,7 @@ public class  ZeusPluginClassLoader extends ClassLoader {
                 try {
                     String outputName =
                             generateOutputName(dexPathList[i], mDexOutputPath);
-                    mDexs[i] = DexFile.loadDex(dexPathList[i], outputName, 0);
+                    mDexFiles[i] = DexFile.loadDex(dexPathList[i], outputName, 0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -169,9 +169,9 @@ public class  ZeusPluginClassLoader extends ClassLoader {
         int length = mFiles.length;
         for (int i = 0; i < length; i++) {
 
-            if (mDexs[i] != null) {
+            if (mDexFiles[i] != null) {
                 String slashName = name.replace('.', '/');
-                clazz = mDexs[i].loadClass(slashName, this);
+                clazz = mDexFiles[i].loadClass(slashName, this);
                 if (clazz != null) {
                     return clazz;
                 }
@@ -188,7 +188,7 @@ public class  ZeusPluginClassLoader extends ClassLoader {
      * @return 类对象
      * @throws ClassNotFoundException
      */
-    public Class<?> loadClassByself(String className) throws ClassNotFoundException {
+    public Class<?> loadClassBySelf(String className) throws ClassNotFoundException {
         Class<?> clazz = findLoadedClass(className);
 
         if (clazz == null) {

@@ -24,12 +24,14 @@ import java.util.zip.ZipInputStream;
  */
 public class PluginUtil {
 
+    private static final String TAG = "PluginUtil";
     private final static int BYTE_IN_SIZE = 4096;
     private static final int BUF_SIZE = 8192;
 
-    private static final int CPU_AMR = 1;
+    private static final int CPU_ARM_32 = 1;
     private static final int CPU_X86 = 2;
     private static final int CPU_MIPS = 3;
+    private static final int CPU_ARM_64 = 4;
 
     private static String mInsidePluginPath = null;
     //start========================获取插件相关目录的方法======================
@@ -66,8 +68,8 @@ public class PluginUtil {
         return getAPKPath(pluginName, getInstalledPathInfo(pluginName));
     }
 
-    public static String getAPKPath(String pluginName, String pathifo){
-        return PluginUtil.getPlugDir(pluginName)+ pathifo + PluginConstant.PLUGIN_SUFF;
+    public static String getAPKPath(String pluginName, String pathifo) {
+        return PluginUtil.getPlugDir(pluginName) + pathifo + PluginConstant.PLUGIN_SUFF;
     }
 
     /**
@@ -82,8 +84,9 @@ public class PluginUtil {
 
     /**
      * 获取dex优化后的文件地址
+     *
      * @param pluingid 插件id
-     * @param apkName apk的名称
+     * @param apkName  apk的名称
      * @return dex优化后的文件地址
      */
     public static String getDexCacheFilePath(String pluingid, String apkName) {
@@ -92,17 +95,18 @@ public class PluginUtil {
 
     /**
      * 获取某个插件id的dex优化后路径
+     *
      * @param pluginid 插件id
      * @return 某个插件id的dex优化后路径
      */
     public static String getDexCacheParentDirectPath(String pluginid) {
         String path;
-        if(TextUtils.isEmpty(pluginid)){
+        if (TextUtils.isEmpty(pluginid)) {
             path = getDexCacheParentDirectPath();
-        }else {
+        } else {
             path = getDexCacheParentDirectPath() + pluginid + "/";
         }
-        if(!isDirExist(path)){
+        if (!isDirExist(path)) {
             createDirWithFile(path);
         }
 
@@ -111,15 +115,17 @@ public class PluginUtil {
 
     /**
      * 判断某个文件是否是文件夹
+     *
      * @param filePathName
      * @return
      */
     public static boolean isDirExist(String filePathName) {
-        if(TextUtils.isEmpty(filePathName)) return false;
-        if(!filePathName.endsWith("/")) filePathName +="/";
+        if (TextUtils.isEmpty(filePathName)) return false;
+        if (!filePathName.endsWith("/")) filePathName += "/";
         File file = new File(filePathName);
         return (file.isDirectory() && file.exists());
     }
+
     /**
      * 优化后的odex/opt文件的文件夹路径
      *
@@ -136,7 +142,7 @@ public class PluginUtil {
      * @return 某个插件安装后so文件存放目录
      */
     public static String getLibFileInside(String pluginName) {
-        return getInsidePluginPath() + pluginName + "/" + getInstalledPathInfo(pluginName) + "/" + getLibFile(getCpuArchitecture());
+        return getInsidePluginPath() + pluginName + "/" + getInstalledPathInfo(pluginName) + "/" + getLibFile(getArchType());
     }
     //end========================获取插件相关目录的方法======================end
 
@@ -188,19 +194,43 @@ public class PluginUtil {
 
     //start========================获取cpu类型的方法========================start
 
+    private static String getSystemProperty(String key, String defaultValue) {
+        String value = defaultValue;
+        try {
+            Class<?> clazz = Class.forName("android.os.SystemProperties");
+            Method get = clazz.getMethod("get", String.class, String.class);
+            value = (String) (get.invoke(clazz, key, ""));
+        } catch (Exception e) {
+//            Log.d("getSystemProperty", "key = " + key + ", error = " + e.getMessage());
+        }
+//        Log.d("getSystemProperty", key + " = " + value);
+        return value;
+    }
+
     /**
      * 获取cpu类型和架构
      *
      * @return 返回CPU的指令集类型，仅支持arm,x86和mips这三种，arm中不区分armv6，armv7和neon，有需要自行添加.
      */
+
+    public static int getArchType() {
+        String cpuType = getSystemProperty("ro.product.cpu.abi", "arm64-v8a");
+        if ("armebai-v7a".equals(cpuType)) {
+            return CPU_ARM_32;
+        } else {
+            return CPU_ARM_64;
+        }
+    }
+
+    //经过测试这个方法不能正确获取cpu类型
+    @Deprecated
     public static int getCpuArchitecture() {
         try {
             InputStream is = new FileInputStream("/proc/cpuinfo");
             InputStreamReader ir = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(ir);
             try {
-                String nameProcessor = "Processor";
-                String nameModel = "model name";
+                String nameProcessor = "CPU architecture";
                 while (true) {
                     String line = br.readLine();
                     String[] pair;
@@ -213,20 +243,8 @@ public class PluginUtil {
                     String key = pair[0].trim();
                     String val = pair[1].trim();
                     if (key.compareTo(nameProcessor) == 0) {
-                        if (val.contains("ARM")) {
-                            return CPU_AMR;
-                        }
-                    }
-
-                    if (key.compareToIgnoreCase(nameModel) == 0) {
-                        if (val.contains("Intel")) {
-                            return CPU_X86;
-                        }
-                    }
-
-                    if (key.compareToIgnoreCase(nameProcessor) == 0) {
-                        if (val.contains("MIPS")) {
-                            return CPU_MIPS;
+                        if (val.equals("8")) {
+                            return CPU_ARM_64;
                         }
                     }
                 }
@@ -239,7 +257,7 @@ public class PluginUtil {
             e.printStackTrace();
         }
 
-        return CPU_AMR;
+        return CPU_ARM_32;
     }
 
     /**
@@ -247,14 +265,15 @@ public class PluginUtil {
      */
     public static String getLibFile(int cpuType) {
         switch (cpuType) {
-            case CPU_AMR:
-                return "lib/armeabi";
+            case CPU_ARM_32:
+                return "lib/armeabi-v7a/";
             case CPU_X86:
                 return "lib/x86/";
             case CPU_MIPS:
                 return "lib/mips/";
+            case CPU_ARM_64:
             default:
-                return "lib/armeabi/";
+                return "lib/arm64-v8a/";
         }
     }
     //end========================获取cpu类型的方法========================end
@@ -471,11 +490,12 @@ public class PluginUtil {
 
     /**
      * 复制assets下文件到一个路径下
+     *
      * @param assetsFileName 要复制的assets的文件名
-     * @param filePath 复制后的文件的绝对路径
+     * @param filePath       复制后的文件的绝对路径
      * @return true表示成功了
      */
-    public static boolean copyAssetsFile(String assetsFileName, String filePath){
+    public static boolean copyAssetsFile(String assetsFileName, String filePath) {
         FileOutputStream out = null;
         InputStream in = null;
         try {
@@ -595,6 +615,7 @@ public class PluginUtil {
 
     /**
      * 设置paramClass中所有名称为paramString的成员变量的值为newClass
+     *
      * @param paramClass  类对象
      * @param paramString 域的名称
      * @param newClass    新的对象

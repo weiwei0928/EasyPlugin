@@ -20,16 +20,16 @@ import java.util.List;
  */
 public class ZeusInstrumentation extends Instrumentation {
 
-    private Instrumentation mInstrumentation;
-    private PackageManager mPackageManager;
+//    private Instrumentation mInstrumentation;
+//    private PackageManager mPackageManager;
+//
+//    public ZeusInstrumentation(Instrumentation instrumentation,PackageManager packageManager) {
+//        mInstrumentation = instrumentation;
+//        mPackageManager = packageManager;
+//    }
 
-    public ZeusInstrumentation(Instrumentation instrumentation,PackageManager packageManager) {
-        mInstrumentation = instrumentation;
-        mPackageManager = packageManager;
-    }
 
-
-    //尽量不使用这种方式启动,我们使用gradle插件字节码替换所有activity没必要使用这个方法了
+    //尽量不使用这种hook系统正常流程的方式启动,有风险。我们使用gradle插件字节码替换所有activity没必要使用这个方法了
 //    @Deprecated
 //    public ActivityResult execStartActivity(
 //            Context who, IBinder contextThread, IBinder token, Activity target,

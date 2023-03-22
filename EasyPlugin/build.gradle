@@ -40,17 +40,16 @@ android {
         abortOnError false
     }
 }
-def versionName = "1.0.0-beta-0" // 当前版本依赖库版本号，这个jitpack不会使用到，只是我们开发者自己查看
+def versionName = "1.0.0-beta-0" // 当前版本依赖库版本号，这个jitpack不会使用到，本地发布使用
 
 afterEvaluate {
     publishing {
         publications {
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.debug // 表示发布 release/debug（jitpack 都不会使用到）
+            maven(MavenPublication) { //publicationName---maven 可以是任何名字  publish+publicationName+publicationToMavenLocal组成task名
+                from components.debug
 
-                groupId = 'com.weiwei' // 这个是依赖库的组 id
-                artifactId = 'EasyPlugin' // 依赖库的名称（本地发布使用，jitpack 都不会使用到）
+                groupId = 'com.weiwei'
+                artifactId = 'EasyPlugin'
                 version = versionName
             }
         }
@@ -59,11 +58,24 @@ afterEvaluate {
                 def baseUrl = buildDir.getParent()
                 def releasesRepoUrl = "$baseUrl/repos/releases"
                 def snapshotsRepoUrl = "$baseUrl/repos/snapshots"
-                println("weiwei--->$versionName")
                 url = versionName.endsWith('RELEASE') ? releasesRepoUrl : snapshotsRepoUrl
                 println("url--->$url")
+//                credentials {
+//                    username "user"
+//                    password "password"
+//                }
             }
         }
+
+        /* //发布外部aar，解决组件化无法传递aar依赖
+        maven(MavenPublication) {
+            artifacts {
+                groupId 'com.ww'
+                artifactId 'file_release'
+                version '1.0'
+                artifact 'libs/aar/file_release.aar'
+            }
+        }*/
     }
 }
 
@@ -91,5 +103,3 @@ task makeJar(type: Jar) {
 }
 
 makeJar.dependsOn(build)
-//在终端执行生成JAR包
-// ./gradlew makeJar

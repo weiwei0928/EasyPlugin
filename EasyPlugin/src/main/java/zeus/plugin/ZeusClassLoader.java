@@ -39,10 +39,10 @@ class ZeusClassLoader extends PathClassLoader {//DexClassLoader {
         if (mClassLoader == null) {
             mClassLoader = new ZeusPluginClassLoader[1];
         } else {
-            int oldLenght = mClassLoader.length;
+            int oldLength = mClassLoader.length;
             Object[] old = mClassLoader;
-            mClassLoader = new ZeusPluginClassLoader[oldLenght + 1];
-            arraycopy(old, 0, mClassLoader, 0, oldLenght);
+            mClassLoader = new ZeusPluginClassLoader[oldLength + 1];
+            arraycopy(old, 0, mClassLoader, 0, oldLength);
         }
         mClassLoader[mClassLoader.length - 1] = new ZeusPluginClassLoader(pluginId, dexPath,
                 PluginUtil.getDexCacheParentDirectPath(pluginId),
@@ -98,7 +98,7 @@ class ZeusClassLoader extends PathClassLoader {//DexClassLoader {
                 if (classLoader == null) continue;
                 try {
                     //这里只查找插件它自己的apk，不需要查parent，避免多次无用查询，提高性能
-                    clazz = classLoader.loadClassByself(className);
+                    clazz = classLoader.loadClassBySelf(className);
                     if (clazz != null) {
                         return clazz;
                     }

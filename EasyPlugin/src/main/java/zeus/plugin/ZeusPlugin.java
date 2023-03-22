@@ -64,8 +64,7 @@ public class ZeusPlugin {
         }
 
         //拷贝so文件，一些插件是没有so文件，而这个方法耗时还稍微高点，所以对于没有so的插件和补丁是不会拷贝的。
-        if (((meta.getFlag() & PluginManifest.FLAG_WITHOUT_SO_FILE) != PluginManifest.FLAG_WITHOUT_SO_FILE )&&
-                !copySoFile(mInstalledPathInfo, PluginUtil.getCpuArchitecture())) {
+        if (((meta.getFlag() & PluginManifest.FLAG_WITHOUT_SO_FILE) != PluginManifest.FLAG_WITHOUT_SO_FILE) && !copySoFile(mInstalledPathInfo, PluginUtil.getArchType())) {
             isInstalling = false;
             mInstalledPathInfo = getInstalledPathInfoNoCache();
             return false;
@@ -79,7 +78,7 @@ public class ZeusPlugin {
         try {
             //预优化补丁dex的加载
             new DexClassLoader(getAPKPath(mPluginId), PluginUtil.getDexCacheParentDirectPath(mPluginId), "", PluginManager.mBaseClassLoader);
-        }catch (Throwable e){
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         PluginManager.addInstalledPlugin(mPluginId, meta);
@@ -135,7 +134,7 @@ public class ZeusPlugin {
             }
 
             //拷贝so文件
-            if (!copySoFile(mInstalledPathInfo, PluginUtil.getCpuArchitecture())) {
+            if (!copySoFile(mInstalledPathInfo, PluginUtil.getArchType())) {
                 isInstalling = false;
                 mInstalledPathInfo = getInstalledPathInfoNoCache();
                 return false;
@@ -151,7 +150,7 @@ public class ZeusPlugin {
         try {
             //预优化补丁dex的加载
             new DexClassLoader(getAPKPath(mPluginId), PluginUtil.getDexCacheParentDirectPath(mPluginId), "", PluginManager.mBaseClassLoader);
-        }catch (Throwable e){
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         PluginManager.addInstalledPlugin(mPluginId, meta);
@@ -200,6 +199,7 @@ public class ZeusPlugin {
         String insideLibPath = PluginUtil.getInsidePluginPath() + mPluginId + "/" + installedPathInfo + "/";
         PluginUtil.createDir(insideLibPath);
         String apkLibPath = PluginUtil.getLibFile(cpuType);
+//        Log.d(TAG, "copySoFile: " + getAPKPath(mPluginId) + "---" + insideLibPath + "---" + apkLibPath);
         //首先将apk中libs文件夹下的一级so文件拷贝
         return PluginUtil.unzipFile(getAPKPath(mPluginId), insideLibPath, apkLibPath);
     }

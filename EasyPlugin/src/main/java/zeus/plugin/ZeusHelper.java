@@ -21,20 +21,20 @@ public class ZeusHelper {
      * 配置LAYOUT_INFLATER_SERVICE时的一些参数
      *
      * @param context       调用着的context
-     * @param systemServcie systemServer对象
+     * @param systemService systemService对象
      * @param name          server的名字
      * @return systemServer对象
      */
-    public Object getSystemService(Context context, Object systemServcie, String name) {
+    public Object getSystemService(Context context, Object systemService, String name) {
         if (Context.LAYOUT_INFLATER_SERVICE.equals(name)) {
-            LayoutInflater inflater = (LayoutInflater) systemServcie;
+            LayoutInflater inflater = (LayoutInflater) systemService;
             inflater.cloneInContext(context);
             //使用某些加固之后该inflater里的mContext变量一直是系统的context，根本不是当前Context
             //所以这里手动设置一次
             PluginUtil.setField(inflater, "mContext", context);
             return inflater;
         }
-        return systemServcie;
+        return systemService;
     }
 
     /**
@@ -67,10 +67,10 @@ public class ZeusHelper {
             PluginUtil.setFieldAllClass(zeusBaseActivity.getBaseContext(), "mResources", localResources);
             PluginUtil.setFieldAllClass(zeusBaseActivity.getBaseContext(), "mTheme", null);
 
-            //AppCompatActivity包含了一个Resouces，这里设置为null让其再次生成一遍
+            //AppCompatActivity包含了一个Resources，这里设置为null让其再次生成一遍
             PluginUtil.setField(zeusBaseActivity, "mResources", null);
             //原始的theme指向的Resources是老的Resources，无法访问新插件，这里设置为null，
-            // 系统会再次使用新的Resouces来生成一次theme，新的theme才能访问新的插件资源
+            // 系统会再次使用新的Resources来生成一次theme，新的theme才能访问新的插件资源
             PluginUtil.setField(zeusBaseActivity, "mTheme", null);
         }
         return zeusBaseActivity.getSuperTheme();

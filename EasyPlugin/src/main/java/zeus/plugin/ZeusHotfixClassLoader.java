@@ -4,6 +4,8 @@ import static java.lang.System.arraycopy;
 
 import android.text.TextUtils;
 
+import com.ww.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -79,7 +81,7 @@ class ZeusHotfixClassLoader extends ZeusPluginClassLoader {
                     generateOutputName(dexPath, mDexOutputPath);
             mDexFiles[oldLength] = DexFile.loadDex(dexPath, outputName, 0);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
     }
 

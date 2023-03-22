@@ -3,6 +3,8 @@ package zeus.plugin;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
 
+import com.ww.Log;
+
 import org.json.JSONObject;
 
 import java.io.File;
@@ -16,6 +18,9 @@ import dalvik.system.DexClassLoader;
  * Created by huangjian on 2016/6/21.
  */
 public class ZeusPlugin {
+
+    private static final String TAG = "ZeusPlugin";
+    
     private String mPluginId;            //使用插件的安装目录作为插件id
     private String mInstalledPathInfo = "";            //安装插件的随机路径信息
 
@@ -79,7 +84,7 @@ public class ZeusPlugin {
             //预优化补丁dex的加载
             new DexClassLoader(getAPKPath(mPluginId), PluginUtil.getDexCacheParentDirectPath(mPluginId), "", PluginManager.mBaseClassLoader);
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
         PluginManager.addInstalledPlugin(mPluginId, meta);
         isInstalling = false;
@@ -116,7 +121,7 @@ public class ZeusPlugin {
                     out.write(temp, 0, len);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.E("printStackTrace",e.toString());
                 mInstalledPathInfo = getInstalledPathInfoNoCache();
                 isInstalling = false;
                 return false;
@@ -151,7 +156,7 @@ public class ZeusPlugin {
             //预优化补丁dex的加载
             new DexClassLoader(getAPKPath(mPluginId), PluginUtil.getDexCacheParentDirectPath(mPluginId), "", PluginManager.mBaseClassLoader);
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
         PluginManager.addInstalledPlugin(mPluginId, meta);
         return true;
@@ -199,7 +204,7 @@ public class ZeusPlugin {
         String insideLibPath = PluginUtil.getInsidePluginPath() + mPluginId + "/" + installedPathInfo + "/";
         PluginUtil.createDir(insideLibPath);
         String apkLibPath = PluginUtil.getLibFile(cpuType);
-//        Log.d(TAG, "copySoFile: " + getAPKPath(mPluginId) + "---" + insideLibPath + "---" + apkLibPath);
+        Log.D(TAG, "copySoFile: " + getAPKPath(mPluginId) + "---" + insideLibPath + "---" + apkLibPath);
         //首先将apk中libs文件夹下的一级so文件拷贝
         return PluginUtil.unzipFile(getAPKPath(mPluginId), insideLibPath, apkLibPath);
     }
@@ -254,7 +259,7 @@ public class ZeusPlugin {
             meta.mainClass = jObject.optString(PluginManifest.PLUG_MAIN_CLASS);
             meta.otherInfo = jObject.optString(PluginManifest.PLUG_OTHER_INFO);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
             return null;
         }
         return meta;
@@ -272,7 +277,7 @@ public class ZeusPlugin {
             File baseModulePathF = new File(PluginUtil.getPlugDir(mPluginId));
             PluginUtil.deleteDirectory(baseModulePathF);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
             return false;
         }
         return true;

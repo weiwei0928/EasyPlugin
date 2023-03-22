@@ -4,7 +4,6 @@ package com.ww;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -21,16 +20,16 @@ abstract class ServiceHostProxy extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
-    Log.d(TAG, "onCreate E");
+    Log.D(TAG, "onCreate E");
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.d(TAG, "onStartCommand, intent: %s" + intent);
+    Log.D(TAG, "onStartCommand, intent: %s" + intent);
 
     if (intent == null) {
       final String msg = "onStartCommand intent is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return START_STICKY;
     }
@@ -38,7 +37,7 @@ abstract class ServiceHostProxy extends Service {
 //    Intent targetIntent = intent.getParcelableExtra(ORIGIN_INTENT);
 //    if (targetIntent == null) {
 //      final String msg = "onStartCommand targetIntent is null";
-//      Log.w(TAG, msg);
+//      Log.E(TAG, msg);
 //
 //      return START_STICKY;
 //    }
@@ -48,10 +47,10 @@ abstract class ServiceHostProxy extends Service {
     if (mPluginService == null) {
       try {
         mPluginService = handleCreateService(serviceClassName);
-        Log.i(TAG, "onStartCommand handleCreateService ok");
+        Log.D(TAG, "onStartCommand handleCreateService ok");
       } catch (Throwable throwable) {
         final String msg = "onStartCommand handleCreateService error";
-        Log.w(TAG, throwable + msg);
+        Log.E(TAG, throwable + msg);
 
         return START_STICKY;
       }
@@ -61,7 +60,7 @@ abstract class ServiceHostProxy extends Service {
 //    if (pluginClassLoader != null) {
 //      targetIntent.setExtrasClassLoader(pluginClassLoader);
 //    } else {
-//      Log.w(TAG, "onStartCommand, pluginClassLoader is null !!!");
+//      Log.E(TAG, "onStartCommand, pluginClassLoader is null !!!");
 //    }
 
     final int ret = mPluginService.onStartCommand(intent, flags, startId);
@@ -80,7 +79,7 @@ abstract class ServiceHostProxy extends Service {
       throw new IllegalStateException("PluginClassLoader#loadClass return null");
     }
 
-    Log.d(TAG, "handleCreateService: "+serviceClass);
+    Log.D(TAG, "handleCreateService: "+serviceClass);
     Service service = (Service) serviceClass.newInstance();
 
     //处理intentService
@@ -104,11 +103,11 @@ abstract class ServiceHostProxy extends Service {
 
   @Override
   public IBinder onBind(Intent intent) {
-    Log.d(TAG, "onBind, intent: %s" + intent);
+    Log.D(TAG, "onBind, intent: %s" + intent);
 
     if (intent == null) {
       final String msg = "onBind intent is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return null;
     }
@@ -116,7 +115,7 @@ abstract class ServiceHostProxy extends Service {
 //    Intent targetIntent = intent.getParcelableExtra(ORIGIN_INTENT);
 //    if (targetIntent == null) {
 //      final String msg = "onBind targetIntent is null";
-//      Log.w(TAG, msg);
+//      Log.E(TAG, msg);
 //
 //      return null;
 //    }
@@ -126,10 +125,10 @@ abstract class ServiceHostProxy extends Service {
     if (mPluginService == null) {
       try {
         mPluginService = handleCreateService(serviceClassName);
-        Log.i(TAG, "onBind handleCreateService ok");
+        Log.D(TAG, "onBind handleCreateService ok");
       } catch (Throwable throwable) {
         final String msg = "onBind handleCreateService error";
-        Log.w(TAG, throwable + msg);
+        Log.E(TAG, throwable + msg);
 
         return null;
       }
@@ -142,11 +141,11 @@ abstract class ServiceHostProxy extends Service {
 
   @Override
   public boolean onUnbind(Intent intent) {
-    Log.d(TAG, "onUnbind, intent: %s" + intent);
+    Log.D(TAG, "onUnbind, intent: %s" + intent);
 
     if (intent == null) {
       final String msg = "onUnbind intent is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return false;
     }
@@ -154,7 +153,7 @@ abstract class ServiceHostProxy extends Service {
     Intent targetIntent = intent.getParcelableExtra(ORIGIN_INTENT);
     if (targetIntent == null) {
       final String msg = "onUnbind targetIntent is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return false;
     }
@@ -164,7 +163,7 @@ abstract class ServiceHostProxy extends Service {
 
     if (mPluginService == null) {
       final String msg = "onUnbind service is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return false;
     }
@@ -177,11 +176,11 @@ abstract class ServiceHostProxy extends Service {
   @Override
   public void onRebind(Intent intent) {
     super.onRebind(intent);
-    Log.d(TAG, "onRebind, intent: %s" + intent);
+    Log.D(TAG, "onRebind, intent: %s" + intent);
 
     if (intent == null) {
       final String msg = "onRebind intent is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return;
     }
@@ -189,7 +188,7 @@ abstract class ServiceHostProxy extends Service {
 //    Intent targetIntent = intent.getParcelableExtra(ORIGIN_INTENT);
 //    if (targetIntent == null) {
 //      final String msg = "onRebind targetIntent is null";
-//      Log.w(TAG, msg);
+//      Log.E(TAG, msg);
 //
 //      return;
 //    }
@@ -199,7 +198,7 @@ abstract class ServiceHostProxy extends Service {
 
     if (mPluginService == null) {
       final String msg = "onRebind service is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return;
     }
@@ -210,20 +209,20 @@ abstract class ServiceHostProxy extends Service {
   @Override
   public void onTaskRemoved(Intent rootIntent) {
     super.onTaskRemoved(rootIntent);
-    Log.d(TAG, "onTaskRemoved, intent: %s" + rootIntent);
+    Log.D(TAG, "onTaskRemoved, intent: %s" + rootIntent);
   }
 
   @SuppressWarnings("PMD.CallSuperLast")
   @Override
   public void onDestroy() {
     super.onDestroy();
-    Log.d(TAG, "onDestroy");
+    Log.D(TAG, "onDestroy");
 
     HashMap<String, Object> params = new HashMap<>();
 
     if (mPluginService == null) {
       final String msg = "onDestroy service is null";
-      Log.w(TAG, msg);
+      Log.E(TAG, msg);
 
       return;
     }

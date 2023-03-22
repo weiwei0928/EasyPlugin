@@ -3,7 +3,6 @@ package com.ww;
 
 import android.app.Service;
 import android.util.ArrayMap;
-import android.util.Log;
 
 import java.util.Map;
 import java.util.Vector;
@@ -49,7 +48,7 @@ public enum ServiceHostProxyManager {
      * @return proxy service class or null if no available proxy service found
      */
     public String getProxyServiceName(String pluginServiceName) {
-        Log.d(TAG,"getProxyServiceName: %s"+pluginServiceName);
+        Log.D(TAG,"getProxyServiceName: %s"+pluginServiceName);
         // 1. find proxy service bound with plugin service
         for (Map.Entry<String, String> entry : mProxyServiceClassMap.entrySet()) {
             if (entry.getValue().equals(pluginServiceName)) {
@@ -70,12 +69,12 @@ public enum ServiceHostProxyManager {
     }
 
     public Service getPluginService(String proxyServiceName) {
-        Log.d("getPluginService: %s", proxyServiceName);
+        Log.D("getPluginService: %s", proxyServiceName);
         return mProxyServiceInstanceMap.get(proxyServiceName);
     }
 
     public void putPluginService(String proxyServiceName, Service pluginServiceInstance) {
-        Log.d(TAG,"putPluginService, proxyServiceName: %s, pluginServiceInstance: %s"+proxyServiceName+
+        Log.D(TAG,"putPluginService, proxyServiceName: %s, pluginServiceInstance: %s"+proxyServiceName+
                 pluginServiceInstance);
         mProxyServiceClassMap.put(proxyServiceName, pluginServiceInstance.getClass().getName());
         mProxyServiceInstanceMap.put(proxyServiceName, pluginServiceInstance);
@@ -83,17 +82,17 @@ public enum ServiceHostProxyManager {
     }
 
     public Service removePluginService(String proxyServiceName) {
-        Log.d(TAG,"removePluginService, proxyServiceName: %s"+ proxyServiceName);
+        Log.D(TAG,"removePluginService, proxyServiceName: %s"+ proxyServiceName);
         mProxyServiceClassMap.put(proxyServiceName, TEXT_EMPTY);
         mUsedEmptyServiceCache.remove(proxyServiceName);
         return mProxyServiceInstanceMap.remove(proxyServiceName);
     }
 
     public void dumpProxyServiceClassMap() {
-        Log.w(TAG,"============ mProxyServiceClassMap ==============");
+        Log.E(TAG,"============ mProxyServiceClassMap ==============");
         for (Map.Entry<String, String> entry : mProxyServiceClassMap.entrySet()) {
-            Log.w("%s -> %s", entry.getKey()+ entry.getValue());
+            Log.E("%s -> %s", entry.getKey()+ entry.getValue());
         }
-        Log.w(TAG,"=================================================");
+        Log.E(TAG,"=================================================");
     }
 }

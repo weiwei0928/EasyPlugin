@@ -14,9 +14,9 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 
+import com.ww.Log;
 import com.ww.ServiceHostProxyManager;
 
 import org.json.JSONArray;
@@ -80,9 +80,9 @@ public class PluginManager {
      * @param application application
      */
     public static void init(Application application, HashMap<String, Integer> defaultList) {
-        if(defaultList == null){
+        if (defaultList == null) {
             mDefaultList = new HashMap<>();
-        }else{
+        } else {
             mDefaultList = defaultList;
         }
         //初始化一些成员变量和加载已安装的插件
@@ -126,16 +126,17 @@ public class PluginManager {
      * 在android 5.0以上设置resource的share lib path，解决加载webView时package id not found的问题
      * 系统会在加载webView之后通过调用AssetManager中的addAssetPathAsSharedLibrary(7.0以上)或者addAssetPath(5.0-7.0之间)
      * 将webView使用的资源apk添加到AssetManager中，因此重新生成AssetManager时也需要对应的设置一下
+     *
      * @param resources
      * @param orgAssetManger
      */
     private static void addShareLibPaths(Resources resources, AssetManager orgAssetManger) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
                 PackageInfo packageInfo = null;
                 Method getLoadedPackageInfoMethod = PluginUtil.getMethod(mBaseClassLoader.loadClass("android.webkit.WebViewFactory"), "getLoadedPackageInfo", new Class[0]);
-                if(getLoadedPackageInfoMethod != null){
-                    packageInfo = (PackageInfo)getLoadedPackageInfoMethod.invoke(null);
+                if (getLoadedPackageInfoMethod != null) {
+                    packageInfo = (PackageInfo) getLoadedPackageInfoMethod.invoke(null);
                 }
                 String webViewApk;
                 if (packageInfo != null && packageInfo.applicationInfo != null) {
@@ -149,8 +150,8 @@ public class PluginManager {
                         addAssetPath.invoke(orgAssetManger, webViewApk);
                     }
                 }
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
+            } catch (Throwable t) {
+                Log.E("printStackTrace",t.toString());
             }
         }
     }
@@ -187,7 +188,7 @@ public class PluginManager {
                     try {
                         new DexClassLoader(PluginUtil.getAPKPath(key), PluginUtil.getDexCacheParentDirectPath(key), null, mBaseClassLoader.getParent());
                     } catch (Throwable e) {
-                        e.printStackTrace();
+                        Log.E("printStackTrace",e.toString());
                     }
                 }
             }
@@ -252,7 +253,7 @@ public class PluginManager {
             if (mLoadedPluginList == null) {
                 mLoadedPluginList = new HashMap<>();
             }
-            if(mLoadedDiffPluginPathInfoList == null){
+            if (mLoadedDiffPluginPathInfoList == null) {
                 mLoadedDiffPluginPathInfoList = new HashMap<>();
             }
             mLoadedPluginList.put(pluginId, pluginManifest);
@@ -299,11 +300,11 @@ public class PluginManager {
                             String id = f.optString("id", "");
                             //兼容老版本，新版本中version字段已不存在
                             int version = f.optInt("version", 1);
-                            String meta = f.optString("meta","");
+                            String meta = f.optString("meta", "");
                             PluginManifest pluginManifest;
-                            if(!TextUtils.isEmpty(meta)){
+                            if (!TextUtils.isEmpty(meta)) {
                                 pluginManifest = new PluginManifest(meta);
-                            }else{
+                            } else {
                                 pluginManifest = new PluginManifest();
                                 pluginManifest.version = String.valueOf(version);
                                 pluginManifest.name = id;
@@ -316,7 +317,7 @@ public class PluginManager {
                     PluginUtil.close(inputStream);
                     PluginUtil.close(bos);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.E("printStackTrace",e.toString());
                     return pluginList;
                 }
             }
@@ -347,7 +348,7 @@ public class PluginManager {
                     JSONObject obj = new JSONObject();
                     obj.put("id", key);
 //                    obj.put("version", version);
-                    obj.put("meta",mInstalledPluginList.get(key).toString());
+                    obj.put("meta", mInstalledPluginList.get(key).toString());
                     array.put(obj);
                 }
                 String result = array.toString();
@@ -361,7 +362,7 @@ public class PluginManager {
                 out = new FileOutputStream(file);
                 out.write(result.getBytes());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.E("printStackTrace",e.toString());
                 return false;
             } finally {
                 PluginUtil.close(out);
@@ -433,7 +434,8 @@ public class PluginManager {
             }
 
             PluginManifest meta = plugin.getPluginMeta();
-            if (meta == null || Integer.valueOf(meta.version) < version || !isSupport(pluginId)) return false;
+            if (meta == null || Integer.valueOf(meta.version) < version || !isSupport(pluginId))
+                return false;
 
             ClassLoader cl = mNowClassLoader;
             if (PluginUtil.isHotFix(pluginId)) {
@@ -476,12 +478,12 @@ public class PluginManager {
     }
 
     //宿主的版本是否支持该插件，大部分情况下宿主是支持所有插件的
-    private static boolean isSupport(String pluginId){
+    private static boolean isSupport(String pluginId) {
         int versionCode = -1;
         try {
             versionCode = mBaseContext.getPackageManager().getPackageInfo(mBaseContext.getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
 
         PluginManifest manifest = getPlugin(pluginId).getPluginMeta();
@@ -492,6 +494,7 @@ public class PluginManager {
                 (versionCode > maxVersion ||
                         versionCode < minVersion));
     }
+
     /**
      * 系统会记录当前已经加载过的view的所有的构造函数，避免反射，提高性能
      * 但是我们插件一旦更新后，view的构造函数就已经无效了，所以要清理这些缓存
@@ -513,15 +516,15 @@ public class PluginManager {
             Field sCacheField = tintContextWrapper.getDeclaredField("sCache");
 
             Field lockField = tintContextWrapper.getDeclaredField("CACHE_LOCK");
-            if(lockField != null){
+            if (lockField != null) {
                 lockField.setAccessible(true);
-                Object lock =  lockField.get(null);
-                synchronized (lock){
+                Object lock = lockField.get(null);
+                synchronized (lock) {
                     sCacheField.setAccessible(true);
                     List list = (List) sCacheField.get(null);
                     list.clear();
                 }
-            }else{
+            } else {
                 sCacheField.setAccessible(true);
                 List list = (List) sCacheField.get(null);
                 list.clear();
@@ -529,6 +532,7 @@ public class PluginManager {
         } catch (Throwable e) {
         }
     }
+
     private static void clearViewConstructorCache1() {
         try {
             @SuppressLint("SoonBlockedPrivateApi") Field field = LayoutInflater.class.getDeclaredField("sConstructorMap");
@@ -545,15 +549,15 @@ public class PluginManager {
             Field sCacheField = tintContextWrapper.getDeclaredField("sCache");
 
             Field lockField = tintContextWrapper.getDeclaredField("CACHE_LOCK");
-            if(lockField != null){
+            if (lockField != null) {
                 lockField.setAccessible(true);
-                Object lock =  lockField.get(null);
-                synchronized (lock){
+                Object lock = lockField.get(null);
+                synchronized (lock) {
                     sCacheField.setAccessible(true);
                     List list = (List) sCacheField.get(null);
                     list.clear();
                 }
-            }else{
+            } else {
                 sCacheField.setAccessible(true);
                 List list = (List) sCacheField.get(null);
                 list.clear();
@@ -599,7 +603,7 @@ public class PluginManager {
             try {
                 flushLayoutCacheMethod.invoke(resources);
             } catch (Throwable e) {
-                e.printStackTrace();
+                Log.E("printStackTrace",e.toString());
             }
         }
         clearCacheObject(PluginUtil.getField(resources, "mDrawableCache"));
@@ -615,12 +619,13 @@ public class PluginManager {
             try {
                 while (acquirePath.invoke(typedArrayPool) != null) ;
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Log.E("printStackTrace",e.toString());
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                Log.E("printStackTrace",e.toString());
             }
         }
     }
+
     /**
      * 加载所有已安装的插件的资源，并清除资源中的缓存
      */
@@ -660,7 +665,7 @@ public class PluginManager {
             //需要清理mTheme对象，否则通过inflate方式加载资源会报错
             PluginUtil.setField(mBaseContext, "mTheme", null);
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
     }
 
@@ -770,7 +775,7 @@ public class PluginManager {
             boolean isNeedLoadResource = false;
 
             for (String pluginId : installedPluginMaps.keySet()) {
-                if(!isSupport(pluginId))continue;
+                if (!isSupport(pluginId)) continue;
                 if (PluginUtil.isPlugin(pluginId)) {
                     if (classLoader == null) {
                         String nativeLibraryDir = null;
@@ -837,7 +842,7 @@ public class PluginManager {
             }
             sPluginMap.put(pluginId, plugin);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
         return plugin;
     }
@@ -866,7 +871,7 @@ public class PluginManager {
         String className = componentName.getClassName();
         intent.setClassName(componentName.getPackageName(), ServiceHostProxyManager.INSTANCE.getProxyServiceName(className));
         intent.putExtra(PluginConstant.PLUGIN_REAL_SERVICE, className);
-        return mBaseContext.bindService(intent,conn,flags);
+        return mBaseContext.bindService(intent, conn, flags);
     }
 
     public static void fixAppCompatActivity() {
@@ -891,7 +896,8 @@ public class PluginManager {
 //            Object proxy = Proxy.newProxyInstance(mNowClassLoader,new Class<?>[]{iPackageManagerIntercept},packageManagerHandler);
 
         } catch (Exception e) {
-            Log.e("TAG", "fixAppCompatActivity: ", e);
+
+            Log.E("PluginManager", "fixAppCompatActivity: " + e);
         }
     }
 

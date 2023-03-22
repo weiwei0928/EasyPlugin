@@ -1,5 +1,7 @@
 package zeus.plugin;
 
+import com.ww.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipFile;
@@ -76,7 +78,7 @@ public class ZeusPluginClassLoader extends ClassLoader {
                             generateOutputName(dexPathList[i], mDexOutputPath);
                     mDexFiles[i] = DexFile.loadDex(dexPathList[i], outputName, 0);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.E("printStackTrace",e.toString());
                 }
             }
         }

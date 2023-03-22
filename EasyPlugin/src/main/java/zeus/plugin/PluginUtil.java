@@ -3,6 +3,8 @@ package zeus.plugin;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
 
+import com.ww.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -187,7 +189,7 @@ public class PluginUtil {
         try {
             if (closeable != null) closeable.close();
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
     }
 
@@ -201,9 +203,9 @@ public class PluginUtil {
             Method get = clazz.getMethod("get", String.class, String.class);
             value = (String) (get.invoke(clazz, key, ""));
         } catch (Exception e) {
-//            Log.d("getSystemProperty", "key = " + key + ", error = " + e.getMessage());
+            Log.D("getSystemProperty", "key = " + key + ", error = " + e.getMessage());
         }
-//        Log.d("getSystemProperty", key + " = " + value);
+        Log.D("getSystemProperty", key + " = " + value);
         return value;
     }
 
@@ -254,7 +256,7 @@ public class PluginUtil {
                 close(is);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
 
         return CPU_ARM_32;
@@ -428,7 +430,7 @@ public class PluginUtil {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         } finally {
             try {
                 close(in);
@@ -479,7 +481,7 @@ public class PluginUtil {
             }
             result = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
             result = false;
         } finally {
             close(in);
@@ -509,7 +511,7 @@ public class PluginUtil {
                 out.write(temp, 0, len);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
             return false;
         } finally {
             close(in);
@@ -541,7 +543,7 @@ public class PluginUtil {
             }
             result = new String(baos.toByteArray(), "UTF-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         } finally {
             close(bis);
             close(baos);
@@ -567,7 +569,7 @@ public class PluginUtil {
             out = new FileOutputStream(file);
             out.write(installedPathInfo.getBytes());
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
             return false;
         } finally {
             close(out);
@@ -606,7 +608,7 @@ public class PluginUtil {
             try {
                 field.set(paramClass, newClass);
             } catch (Throwable e) {
-                e.printStackTrace();
+                Log.E("printStackTrace",e.toString());
             }
         } else {
             System.err.print(paramString + " is not found in " + paramClass.getClass().getName());
@@ -696,7 +698,7 @@ public class PluginUtil {
             if (field != null)
                 object = field.get(paramClass);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
         return object;
     }

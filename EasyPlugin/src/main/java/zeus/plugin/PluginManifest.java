@@ -2,6 +2,8 @@ package zeus.plugin;
 
 import android.text.TextUtils;
 
+import com.ww.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,7 +63,7 @@ public class PluginManifest {
             otherInfo = jsonObject.optString(PLUG_OTHER_INFO);
             flag = jsonObject.optString(PLUG_FLAG);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
     }
 
@@ -100,7 +102,7 @@ public class PluginManifest {
             jsonObject.put(PLUG_OTHER_INFO, otherInfo);
             jsonObject.put(PLUG_OTHER_INFO, flag);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.E("printStackTrace",e.toString());
         }
         return jsonObject.toString();
     }

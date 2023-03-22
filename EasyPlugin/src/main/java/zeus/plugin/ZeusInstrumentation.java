@@ -50,11 +50,11 @@ public class ZeusInstrumentation extends Instrumentation {
 //                    Intent.class, int.class, Bundle.class);
 //            return (ActivityResult) execStartActivity.invoke(mInstrumentation, who, contextThread, token, target, intent, requestCode, options);
 //        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
+//            Log.E("printStackTrace",e.toString());
 //        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
+//            Log.E("printStackTrace",e.toString());
 //        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
+//            Log.E("printStackTrace",e.toString());
 //        }
 //        return null;
 //    }

@@ -40,6 +40,7 @@ import dalvik.system.DexClassLoader;
  * 插件管理类，管理插件的初始化、安装、卸载、加载等等
  * 所有的方法和对象都为静态。
  * <p/>
+ * Created by huangjian on 2016/6/21.
  */
 public class PluginManager {
 

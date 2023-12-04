@@ -9,7 +9,7 @@ public class PluginConstant {
      * 插件配置文件存放的路径，没有放到manifest中的meta data是因为有些手机取不到这个值
      */
 //    public static final String PLUGINWEB_MAINIFEST_FILE = "assets/zeusplugin.meta";
-    public static final String PLUGINWEB_MAINIFEST_FILE = "assets/plugin.meta";
+    public static final String PLUGIN_WEB_MANIFEST_FILE = "assets/plugin.meta";
     /**
      * 有些手机中DexFile只能接受.apk和.jar后缀，所以这里二选一，如果是sd卡上最好用jar，因为apk会被当成未安装apk被清理软件清理。
      */
@@ -28,7 +28,7 @@ public class PluginConstant {
     /**
      * 如果插件路径是在SD卡上，则插件后缀应为jar
      */
-    public static final String PLUGIN_JAR_SUFF = ".jar";
+    public static final String PLUGIN_JAR_SUFFIX = ".jar";
     public static final String PLUGIN_INSTALLED_INFO_PATH = "zeusplugin_installinfo";       //插件的安装路径信息，每次安装后的apk的文件名都是随机的，为了实现动态实时加载
 //    public static final String EXP_PLUG_PREFIX = "zeusplugin";                              //如果插件id是以zeusplugin开头，则认为是插件
     public static final String EXP_PLUG_PREFIX = "plugin";                              //如果插件id是以zeusplugin开头，则认为是插件

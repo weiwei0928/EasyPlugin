@@ -48,10 +48,8 @@ class TestPluginActivity : ZeusBaseActivity() {
             Log.d(TAG, "startPlugin: $className")
             val cl: Class<*> = PluginManager.mNowClassLoader.loadClass(className)
             val intent = Intent(this, cl)
-            //这种方式为通过在宿主AndroidManifest.xml中预埋activity实现
             startActivity(intent);
-            //这种方式为通过欺骗android系统的activity存在性校验的方式实现
-//            PluginManager.startActivity(this, intent)
+
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()
         }

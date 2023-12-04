@@ -10,6 +10,7 @@ import java.util.HashMap;
 import zeus.plugin.PluginConstant;
 import zeus.plugin.PluginManager;
 
+@Deprecated
 /** 宿主中用于占坑的 Service 代理基类 */
 abstract class ServiceHostProxy extends Service {
 

@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
  * @author weiwei
  * Created on 2022/2/9 4:12 下午
  */
+@Deprecated
 public class PackageManagerHandler implements InvocationHandler {
     private Object obj;
 

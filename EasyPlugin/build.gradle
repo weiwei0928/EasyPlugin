@@ -40,13 +40,13 @@ android {
         abortOnError false
     }
 }
-def versionName = "1.0.0-beta-0" // 当前版本依赖库版本号，这个jitpack不会使用到，本地发布使用
+def versionName = "1.0.0-beta-1" // 当前版本依赖库版本号，这个jitpack不会使用到，本地发布使用
 
 afterEvaluate {
     publishing {
         publications {
             maven(MavenPublication) { //publicationName---maven 可以是任何名字  publish+publicationName+publicationToMavenLocal组成task名
-                from components.debug
+                from components.release
 
                 groupId = 'com.weiwei'
                 artifactId = 'EasyPlugin'
@@ -57,8 +57,8 @@ afterEvaluate {
             maven {
                 def baseUrl = buildDir.getParent()
                 def releasesRepoUrl = "$baseUrl/repos/releases"
-                def snapshotsRepoUrl = "$baseUrl/repos/snapshots"
-                url = versionName.endsWith('RELEASE') ? releasesRepoUrl : snapshotsRepoUrl
+                def snapshotsRepoUrl = "$baseUrl/repos/beta"
+                url = versionName.contains('beta') ? snapshotsRepoUrl : releasesRepoUrl
                 println("url--->$url")
 //                credentials {
 //                    username "user"
@@ -67,19 +67,20 @@ afterEvaluate {
             }
         }
 
-        /* //发布外部aar，解决组件化无法传递aar依赖
+        /*
+        //发布外部aar，解决组件化无法传递aar依赖
         maven(MavenPublication) {
             artifacts {
                 groupId 'com.ww'
                 artifactId 'file_release'
                 version '1.0'
+                //要发布的aar文件路径
                 artifact 'libs/aar/file_release.aar'
             }
         }*/
     }
 }
 
-def sdkVersion = "1.0-beta-0"
 
 dependencies {
 
@@ -89,6 +90,7 @@ dependencies {
 
 }
 
+def sdkVersion = "1.0-beta-0"
 task makeJar(type: Jar) {
     archiveName = "plugin-sdk_${sdkVersion}.jar"
     //删除存在的

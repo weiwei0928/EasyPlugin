@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 
 import zeus.plugin.PluginManager;
 
+@Deprecated
 class ContextProxy<T extends Context> {
 
   private final T mContext;

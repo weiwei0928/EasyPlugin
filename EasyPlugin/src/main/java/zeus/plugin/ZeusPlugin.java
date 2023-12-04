@@ -175,7 +175,7 @@ public class ZeusPlugin {
             if (list == null) return;
             for (File f : list) {
                 String fileFullName = f.getName();
-                if (fileFullName.endsWith(PluginConstant.PLUGIN_JAR_SUFF) || fileFullName.endsWith(PluginConstant.PLUGIN_SUFF)) {
+                if (fileFullName.endsWith(PluginConstant.PLUGIN_JAR_SUFFIX) || fileFullName.endsWith(PluginConstant.PLUGIN_SUFF)) {
                     String fileName = fileFullName.substring(0, fileFullName.lastIndexOf("."));
                     if (!fileName.equalsIgnoreCase(installedPathInfo)) {
                         f.delete();
@@ -289,7 +289,7 @@ public class ZeusPlugin {
      * @return meta字符串
      */
     private String readMeta() {
-        return PluginUtil.readZipFileString(getAPKPath(mPluginId), PluginConstant.PLUGINWEB_MAINIFEST_FILE);
+        return PluginUtil.readZipFileString(getAPKPath(mPluginId), PluginConstant.PLUGIN_WEB_MANIFEST_FILE);
     }
 
     /**
